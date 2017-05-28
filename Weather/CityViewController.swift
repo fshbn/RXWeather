@@ -8,9 +8,15 @@
 
 import UIKit
 
-class CityViewController: UIViewController {
+#if !RX_NO_MODULE
+    import RxSwift
+    import RxCocoa
+#endif
 
+class CityViewController: UIViewController {
+    
     var viewModel: CityViewModel?
+    let disposeBag = DisposeBag()
     
     @IBOutlet weak var locationLabel: UILabel!
     @IBOutlet weak var iconLabel: UILabel!
@@ -25,35 +31,47 @@ class CityViewController: UIViewController {
     }
     
     fileprivate func observeViewController() {
-        viewModel?.cityName.observe {
-            [unowned self] in
-            self.locationLabel.text = $0
-        }
+        viewModel?.cityName.asObservable()
+            .subscribe(onNext: {
+                [unowned self] in
+                self.locationLabel.text = $0
+            })
+            .addDisposableTo(disposeBag)
         
-        viewModel?.icon.observe {
-            [unowned self] in
-            self.iconLabel.text = $0
-        }
+        viewModel?.icon.asObservable()
+            .subscribe(onNext: {
+                [unowned self] in
+                self.iconLabel.text = $0
+            })
+            .addDisposableTo(disposeBag)
         
-        viewModel?.temperature.observe {
-            [unowned self] in
-            self.temperatureLabel.text = $0
-        }
+        viewModel?.temperature.asObservable()
+            .subscribe(onNext: {
+                [unowned self] in
+                self.temperatureLabel.text = $0
+            })
+            .addDisposableTo(disposeBag)
         
-        viewModel?.precipitationProbability.observe {
-            [unowned self] in
-            self.rain3hLabel.text = $0
-        }
+        viewModel?.precipitationProbability.asObservable()
+            .subscribe(onNext: {
+                [unowned self] in
+                self.rain3hLabel.text = $0
+            })
+            .addDisposableTo(disposeBag)
         
-        viewModel?.windSpeed.observe {
-            [unowned self] in
-            self.windSpeedLabel.text = $0
-        }
+        viewModel?.windSpeed.asObservable()
+            .subscribe(onNext: {
+                [unowned self] in
+                self.windSpeedLabel.text = $0
+            })
+            .addDisposableTo(disposeBag)
         
-        viewModel?.humidity.observe {
-            [unowned self] in
-            self.humidityLabel.text = $0
-        }
+        viewModel?.humidity.asObservable()
+            .subscribe(onNext: {
+                [unowned self] in
+                self.humidityLabel.text = $0
+            })
+            .addDisposableTo(disposeBag)
     }
     
     func closeView() {

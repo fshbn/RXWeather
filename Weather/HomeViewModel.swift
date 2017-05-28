@@ -18,11 +18,11 @@ import CoreData
 class HomeViewModel {
     
     // MARK: - Properties
-    let locationName: BrnObservable<String>
-    let iconText: BrnObservable<String>
-    let temperature: BrnObservable<String>
+    let locationName: Variable<String> = Variable(emptyString)
+    let iconText: Variable<String> = Variable(emptyString)
+    let temperature: Variable<String> = Variable(emptyString)
     let bookmarkedLocations: Variable<[Weather]> = Variable([])
-    let errorMessage: BrnObservable<String?>
+    let errorMessage: Variable<String> = Variable(emptyString)
     
     var userLastLocation: CLLocation
     var bookmarks: [Weather]
@@ -34,11 +34,6 @@ class HomeViewModel {
     
     // MARK: - init
     init() {
-        locationName = BrnObservable(emptyString)
-        iconText = BrnObservable(emptyString)
-        temperature = BrnObservable(emptyString)
-        errorMessage = BrnObservable(nil)
-        
         userLastLocation = CLLocation(latitude: 0, longitude: 0)
         bookmarks = [Weather]()
         
