@@ -35,20 +35,26 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     // MARK: ViewModel
     var viewModel: HomeViewModel? {
         didSet {
-            viewModel?.locationName.observe {
-                [unowned self] in
-                self.locationLabel.text = $0
-            }
+            viewModel?.locationName.asObservable()
+                .subscribe(onNext: {
+                    [unowned self] in
+                    self.locationLabel.text = $0
+                })
+                .addDisposableTo(disposeBag)
             
-            viewModel?.iconText.observe {
-                [unowned self] in
-                self.iconLabel.text = $0
-            }
+            viewModel?.iconText.asObservable()
+                .subscribe(onNext: {
+                    [unowned self] in
+                    self.iconLabel.text = $0
+                })
+                .addDisposableTo(disposeBag)
             
-            viewModel?.temperature.observe {
-                [unowned self] in
-                self.temperatureLabel.text = $0
-            }
+            viewModel?.temperature.asObservable()
+                .subscribe(onNext: {
+                    [unowned self] in
+                    self.temperatureLabel.text = $0
+                })
+                .addDisposableTo(disposeBag)
             
             viewModel?.bookmarkedLocations.asObservable()
                 .subscribe(onNext: {
@@ -57,12 +63,14 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
                 })
                 .addDisposableTo(disposeBag)
             
-            viewModel?.errorMessage.observe {
-                [unowned self] in
-                let alert = UIAlertController(title: "Mayday Situation", message: $0, preferredStyle: UIAlertControllerStyle.alert)
-                alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.destructive, handler: nil))
-                self.present(alert, animated: true, completion: nil)
-            }
+            viewModel?.errorMessage.asObservable()
+                .subscribe(onNext: {
+                    [unowned self] in
+                    let alert = UIAlertController(title: "Mayday Situation", message: $0, preferredStyle: UIAlertControllerStyle.alert)
+                    alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.destructive, handler: nil))
+                    self.present(alert, animated: true, completion: nil)
+                })
+                .addDisposableTo(disposeBag)
         }
     }
     

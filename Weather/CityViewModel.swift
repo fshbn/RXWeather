@@ -9,16 +9,22 @@
 import Foundation
 import CoreLocation
 
+
+#if !RX_NO_MODULE
+    import RxSwift
+    import RxCocoa
+#endif
+
 class CityViewModel {
 
     // MARK: - Properties
-    let cityName: BrnObservable<String>
-    let icon: BrnObservable<String>
-    let temperature: BrnObservable<String>
-    let precipitationProbability: BrnObservable<String>
-    let humidity: BrnObservable<String>
-    let windSpeed: BrnObservable<String>
-    let forecasts: BrnObservable<[Forecast]>
+    let cityName: Variable<String> = Variable(emptyString)
+    let icon: Variable<String> = Variable(emptyString)
+    let temperature: Variable<String> = Variable(emptyString)
+    let precipitationProbability: Variable<String> = Variable(emptyString)
+    let humidity: Variable<String> = Variable(emptyString)
+    let windSpeed: Variable<String> = Variable(emptyString)
+    let forecasts: Variable<[Forecast]> = Variable([])
     
     var lat: Double = 0
     var lon: Double = 0
@@ -28,13 +34,13 @@ class CityViewModel {
     
     // MARK: - init
     init(weather: Weather) {
-        cityName = BrnObservable(weather.cityName)
-        icon = BrnObservable(weather.icon)
-        temperature = BrnObservable(String(format: "%.0f", weather.temperature) + "°")
-        precipitationProbability = BrnObservable(String(format: "%.0f", weather.precipitationProbability))
-        humidity = BrnObservable(String(format: "%.0f", weather.humidity))
-        windSpeed = BrnObservable(String(format: "%.0f", weather.windSpeed))
-        forecasts = BrnObservable([])
+        cityName.value = weather.cityName
+        icon.value = weather.icon
+        temperature.value = String(format: "%.0f", weather.temperature) + "°"
+        precipitationProbability.value = String(format: "%.0f", weather.precipitationProbability)
+        humidity.value = String(format: "%.0f", weather.humidity)
+        windSpeed.value = String(format: "%.0f", weather.windSpeed)
+        forecasts.value = []
         
         lat = weather.lat
         lon = weather.lon
