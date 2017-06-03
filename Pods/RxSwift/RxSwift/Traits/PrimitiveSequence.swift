@@ -11,22 +11,22 @@ public struct PrimitiveSequence<Trait, Element> {
     fileprivate let source: Observable<Element>
 
     init(raw: Observable<Element>) {
-        self.source = raw
+        source = raw
     }
 }
 
 /// Sequence containing exactly 1 element
-public enum SingleTrait { }
+public enum SingleTrait {}
 /// Represents a push style sequence containing 1 element.
 public typealias Single<Element> = PrimitiveSequence<SingleTrait, Element>
 
 /// Sequence containing 0 or 1 elements
-public enum MaybeTrait { }
+public enum MaybeTrait {}
 /// Represents a push style sequence containing 0 or 1 element.
 public typealias Maybe<Element> = PrimitiveSequence<MaybeTrait, Element>
 
 /// Sequence containing 0 elements
-public enum CompletableTrait { }
+public enum CompletableTrait {}
 /// Represents a push style sequence containing 0 elements.
 public typealias Completable = PrimitiveSequence<CompletableTrait, Swift.Never>
 
@@ -80,7 +80,7 @@ public enum SingleEvent<Element> {
 }
 
 extension PrimitiveSequenceType where TraitType == SingleTrait {
-    public typealias SingleObserver = (SingleEvent<ElementType>) -> ()
+    public typealias SingleObserver = (SingleEvent<ElementType>) -> Void
 
     /**
      Creates an observable sequence from a specified subscribe method implementation.
@@ -94,10 +94,10 @@ extension PrimitiveSequenceType where TraitType == SingleTrait {
         let source = Observable<ElementType>.create { observer in
             return subscribe { event in
                 switch event {
-                case .success(let element):
+                case let .success(element):
                     observer.on(.next(element))
                     observer.on(.completed)
-                case .error(let error):
+                case let .error(error):
                     observer.on(.error(error))
                 }
             }
@@ -106,22 +106,21 @@ extension PrimitiveSequenceType where TraitType == SingleTrait {
         return PrimitiveSequence(raw: source)
     }
 
-
     /**
      Subscribes `observer` to receive events for this sequence.
 
      - returns: Subscription for `observer` that can be used to cancel production of sequence elements and free resources.
      */
-    public func subscribe(_ observer: @escaping (SingleEvent<ElementType>) -> ()) -> Disposable {
+    public func subscribe(_ observer: @escaping (SingleEvent<ElementType>) -> Void) -> Disposable {
         var stopped = false
-        return self.primitiveSequence.asObservable().subscribe { event in
+        return primitiveSequence.asObservable().subscribe { event in
             if stopped { return }
             stopped = true
 
             switch event {
-            case .next(let element):
+            case let .next(element):
                 observer(.success(element))
-            case .error(let error):
+            case let .error(error):
                 observer(.error(error))
             case .completed:
                 rxFatalError("Singles can't emit a completion event")
@@ -137,11 +136,11 @@ extension PrimitiveSequenceType where TraitType == SingleTrait {
      - returns: Subscription object used to unsubscribe from the observable sequence.
      */
     public func subscribe(onSuccess: ((ElementType) -> Void)? = nil, onError: ((Swift.Error) -> Void)? = nil) -> Disposable {
-        return self.primitiveSequence.subscribe { event in
+        return primitiveSequence.subscribe { event in
             switch event {
-            case .success(let element):
+            case let .success(element):
                 onSuccess?(element)
-            case .error(let error):
+            case let .error(error):
                 onError?(error)
             }
         }
@@ -164,7 +163,7 @@ public enum MaybeEvent<Element> {
 }
 
 public extension PrimitiveSequenceType where TraitType == MaybeTrait {
-    public typealias MaybeObserver = (MaybeEvent<ElementType>) -> ()
+    public typealias MaybeObserver = (MaybeEvent<ElementType>) -> Void
 
     /**
      Creates an observable sequence from a specified subscribe method implementation.
@@ -178,10 +177,10 @@ public extension PrimitiveSequenceType where TraitType == MaybeTrait {
         let source = Observable<ElementType>.create { observer in
             return subscribe { event in
                 switch event {
-                case .success(let element):
+                case let .success(element):
                     observer.on(.next(element))
                     observer.on(.completed)
-                case .error(let error):
+                case let .error(error):
                     observer.on(.error(error))
                 case .completed:
                     observer.on(.completed)
@@ -197,16 +196,16 @@ public extension PrimitiveSequenceType where TraitType == MaybeTrait {
 
      - returns: Subscription for `observer` that can be used to cancel production of sequence elements and free resources.
      */
-    public func subscribe(_ observer: @escaping (MaybeEvent<ElementType>) -> ()) -> Disposable {
+    public func subscribe(_ observer: @escaping (MaybeEvent<ElementType>) -> Void) -> Disposable {
         var stopped = false
-        return self.primitiveSequence.asObservable().subscribe { event in
+        return primitiveSequence.asObservable().subscribe { event in
             if stopped { return }
             stopped = true
 
             switch event {
-            case .next(let element):
+            case let .next(element):
                 observer(.success(element))
-            case .error(let error):
+            case let .error(error):
                 observer(.error(error))
             case .completed:
                 observer(.completed)
@@ -223,11 +222,11 @@ public extension PrimitiveSequenceType where TraitType == MaybeTrait {
      - returns: Subscription object used to unsubscribe from the observable sequence.
      */
     public func subscribe(onSuccess: ((ElementType) -> Void)? = nil, onError: ((Swift.Error) -> Void)? = nil, onCompleted: (() -> Void)? = nil) -> Disposable {
-        return self.primitiveSequence.subscribe { event in
+        return primitiveSequence.subscribe { event in
             switch event {
-            case .success(let element):
+            case let .success(element):
                 onSuccess?(element)
-            case .error(let error):
+            case let .error(error):
                 onError?(error)
             case .completed:
                 onCompleted?()
@@ -249,7 +248,7 @@ public enum CompletableEvent {
 }
 
 public extension PrimitiveSequenceType where TraitType == CompletableTrait, ElementType == Swift.Never {
-    public typealias CompletableObserver = (CompletableEvent) -> ()
+    public typealias CompletableObserver = (CompletableEvent) -> Void
 
     /**
      Creates an observable sequence from a specified subscribe method implementation.
@@ -263,7 +262,7 @@ public extension PrimitiveSequenceType where TraitType == CompletableTrait, Elem
         let source = Observable<ElementType>.create { observer in
             return subscribe { event in
                 switch event {
-                case .error(let error):
+                case let .error(error):
                     observer.on(.error(error))
                 case .completed:
                     observer.on(.completed)
@@ -279,16 +278,16 @@ public extension PrimitiveSequenceType where TraitType == CompletableTrait, Elem
 
      - returns: Subscription for `observer` that can be used to cancel production of sequence elements and free resources.
      */
-    public func subscribe(_ observer: @escaping (CompletableEvent) -> ()) -> Disposable {
+    public func subscribe(_ observer: @escaping (CompletableEvent) -> Void) -> Disposable {
         var stopped = false
-        return self.primitiveSequence.asObservable().subscribe { event in
+        return primitiveSequence.asObservable().subscribe { event in
             if stopped { return }
             stopped = true
 
             switch event {
             case .next:
                 rxFatalError("Completables can't emit values")
-            case .error(let error):
+            case let .error(error):
                 observer(.error(error))
             case .completed:
                 observer(.completed)
@@ -304,9 +303,9 @@ public extension PrimitiveSequenceType where TraitType == CompletableTrait, Elem
      - returns: Subscription object used to unsubscribe from the observable sequence.
      */
     public func subscribe(onCompleted: (() -> Void)? = nil, onError: ((Swift.Error) -> Void)? = nil) -> Disposable {
-        return self.primitiveSequence.subscribe { event in
+        return primitiveSequence.subscribe { event in
             switch event {
-            case .error(let error):
+            case let .error(error):
                 onError?(error)
             case .completed:
                 onCompleted?()
@@ -369,7 +368,6 @@ extension PrimitiveSequence {
         return PrimitiveSequence(raw: Observable.error(error))
     }
 
-
     /**
      Returns a non-terminating observable sequence, which can be used to denote an infinite duration.
 
@@ -422,16 +420,16 @@ extension PrimitiveSequence {
      - parameter onDispose: Action to invoke after subscription to source observable has been disposed for any reason. It can be either because sequence terminates for some reason or observer subscription being disposed.
      - returns: The source sequence with the side-effecting behavior applied.
      */
-    public func `do`(onNext: ((E) throws -> Void)? = nil, onError: ((Swift.Error) throws -> Void)? = nil, onCompleted: (() throws -> Void)? = nil, onSubscribe: (() -> ())? = nil, onSubscribed: (() -> ())? = nil, onDispose: (() -> ())? = nil)
+    public func `do`(onNext: ((E) throws -> Void)? = nil, onError: ((Swift.Error) throws -> Void)? = nil, onCompleted: (() throws -> Void)? = nil, onSubscribe: (() -> Void)? = nil, onSubscribed: (() -> Void)? = nil, onDispose: (() -> Void)? = nil)
         -> PrimitiveSequence<Trait, Element> {
-            return PrimitiveSequence(raw: source.do(
-                onNext: onNext,
-                onError: onError,
-                onCompleted: onCompleted,
-                onSubscribe: onSubscribe,
-                onSubscribed: onSubscribed,
-                onDispose: onDispose)
-            )
+        return PrimitiveSequence(raw: source.do(
+            onNext: onNext,
+            onError: onError,
+            onCompleted: onCompleted,
+            onSubscribe: onSubscribe,
+            onSubscribed: onSubscribed,
+            onDispose: onDispose)
+        )
     }
 
     /**
@@ -491,20 +489,20 @@ extension PrimitiveSequence {
     }
 
     /**
-    Wraps the source sequence in order to run its subscription and unsubscription logic on the specified 
-    scheduler. 
-    
-    This operation is not commonly used.
-    
-    This only performs the side-effects of subscription and unsubscription on the specified scheduler. 
-    
-    In order to invoke observer callbacks on a `scheduler`, use `observeOn`.
+     Wraps the source sequence in order to run its subscription and unsubscription logic on the specified
+     scheduler.
 
-    - seealso: [subscribeOn operator on reactivex.io](http://reactivex.io/documentation/operators/subscribeon.html)
-    
-    - parameter scheduler: Scheduler to perform subscription and unsubscription actions on.
-    - returns: The source sequence whose subscriptions and unsubscriptions happen on the specified scheduler.
-    */
+     This operation is not commonly used.
+
+     This only performs the side-effects of subscription and unsubscription on the specified scheduler.
+
+     In order to invoke observer callbacks on a `scheduler`, use `observeOn`.
+
+     - seealso: [subscribeOn operator on reactivex.io](http://reactivex.io/documentation/operators/subscribeon.html)
+
+     - parameter scheduler: Scheduler to perform subscription and unsubscription actions on.
+     - returns: The source sequence whose subscriptions and unsubscriptions happen on the specified scheduler.
+     */
     public func subscribeOn(_ scheduler: ImmediateSchedulerType)
         -> PrimitiveSequence<Trait, Element> {
         return PrimitiveSequence(raw: source.subscribeOn(scheduler))
@@ -577,12 +575,11 @@ extension PrimitiveSequence {
      */
     public func debug(_ identifier: String? = nil, trimOutput: Bool = false, file: String = #file, line: UInt = #line, function: String = #function)
         -> PrimitiveSequence<Trait, Element> {
-            return PrimitiveSequence(raw: source.debug(identifier, trimOutput: trimOutput, file: file, line: line, function: function))
+        return PrimitiveSequence(raw: source.debug(identifier, trimOutput: trimOutput, file: file, line: line, function: function))
     }
 }
 
-extension PrimitiveSequenceType where ElementType: SignedInteger
-{
+extension PrimitiveSequenceType where ElementType: SignedInteger {
     /**
      Returns an observable sequence that periodically produces a value after the specified initial relative due time has elapsed, using the specified scheduler to run timers.
 
@@ -593,7 +590,7 @@ extension PrimitiveSequenceType where ElementType: SignedInteger
      - returns: An observable sequence that produces a value after due time has elapsed and then each period.
      */
     public static func timer(_ dueTime: RxTimeInterval, scheduler: SchedulerType)
-        -> PrimitiveSequence<TraitType, ElementType>  {
+        -> PrimitiveSequence<TraitType, ElementType> {
         return PrimitiveSequence(raw: Observable<ElementType>.timer(dueTime, scheduler: scheduler))
     }
 }
@@ -634,7 +631,7 @@ extension ObservableType {
      - returns: An observable sequence that emits a single element or throws an exception if more (or none) of them are emitted.
      */
     public func asSingle() -> Single<E> {
-        return PrimitiveSequence(raw: AsSingle(source: self.asObservable()))
+        return PrimitiveSequence(raw: AsSingle(source: asObservable()))
     }
 
     /**
@@ -646,16 +643,16 @@ extension ObservableType {
      - returns: An observable sequence that emits a single element, completes or throws an exception if more of them are emitted.
      */
     public func asMaybe() -> Maybe<E> {
-        return PrimitiveSequence(raw: AsMaybe(source: self.asObservable()))
+        return PrimitiveSequence(raw: AsMaybe(source: asObservable()))
     }
 }
 
 extension ObservableType where E == Never {
     /**
-    - returns: An observable sequence that completes.
+     - returns: An observable sequence that completes.
      */
     public func asCompletable()
         -> Completable {
-        return PrimitiveSequence(raw: self.asObservable())
+        return PrimitiveSequence(raw: asObservable())
     }
 }

@@ -1,7 +1,7 @@
 /**
-    A container for closures to be executed before and after each example.
-*/
-final internal class ExampleHooks {
+ A container for closures to be executed before and after each example.
+ */
+internal final class ExampleHooks {
     internal var befores: [BeforeExampleWithMetadataClosure] = []
     internal var afters: [AfterExampleWithMetadataClosure] = []
     internal var phase: HooksPhase = .nothingExecuted

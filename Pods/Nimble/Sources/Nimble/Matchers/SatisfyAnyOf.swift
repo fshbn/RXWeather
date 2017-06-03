@@ -1,7 +1,7 @@
 import Foundation
 
 /// A Nimble matcher that succeeds when the actual value matches with any of the matchers
-/// provided in the variable list of matchers. 
+/// provided in the variable list of matchers.
 public func satisfyAnyOf<T, U>(_ matchers: U...) -> NonNilMatcherFunc<T>
     where U: Matcher, U.ValueType == T {
     return satisfyAnyOf(matchers)
@@ -37,26 +37,26 @@ public func || <T>(left: MatcherFunc<T>, right: MatcherFunc<T>) -> NonNilMatcher
 }
 
 #if _runtime(_ObjC)
-extension NMBObjCMatcher {
-    public class func satisfyAnyOfMatcher(_ matchers: [NMBObjCMatcher]) -> NMBObjCMatcher {
-        return NMBObjCMatcher(canMatchNil: false) { actualExpression, failureMessage in
-            if matchers.isEmpty {
-                failureMessage.stringValue = "satisfyAnyOf must be called with at least one matcher"
-                return false
-            }
-
-            var elementEvaluators = [NonNilMatcherFunc<NSObject>]()
-            for matcher in matchers {
-                let elementEvaluator: (Expression<NSObject>, FailureMessage) -> Bool = {
-                    expression, failureMessage in
-                    return matcher.matches({try! expression.evaluate()}, failureMessage: failureMessage, location: actualExpression.location)
+    extension NMBObjCMatcher {
+        public class func satisfyAnyOfMatcher(_ matchers: [NMBObjCMatcher]) -> NMBObjCMatcher {
+            return NMBObjCMatcher(canMatchNil: false) { actualExpression, failureMessage in
+                if matchers.isEmpty {
+                    failureMessage.stringValue = "satisfyAnyOf must be called with at least one matcher"
+                    return false
                 }
 
-                elementEvaluators.append(NonNilMatcherFunc(elementEvaluator))
-            }
+                var elementEvaluators = [NonNilMatcherFunc<NSObject>]()
+                for matcher in matchers {
+                    let elementEvaluator: (Expression<NSObject>, FailureMessage) -> Bool = {
+                        expression, failureMessage in
+                        matcher.matches({ try! expression.evaluate() }, failureMessage: failureMessage, location: actualExpression.location)
+                    }
 
-            return try! satisfyAnyOf(elementEvaluators).matches(actualExpression, failureMessage: failureMessage)
+                    elementEvaluators.append(NonNilMatcherFunc(elementEvaluator))
+                }
+
+                return try! satisfyAnyOf(elementEvaluators).matches(actualExpression, failureMessage: failureMessage)
+            }
         }
     }
-}
 #endif

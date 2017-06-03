@@ -10,11 +10,11 @@ public func beNil<T>() -> MatcherFunc<T> {
 }
 
 #if _runtime(_ObjC)
-extension NMBObjCMatcher {
-    public class func beNilMatcher() -> NMBObjCMatcher {
-        return NMBObjCMatcher { actualExpression, failureMessage in
-            return try! beNil().matches(actualExpression, failureMessage: failureMessage)
+    extension NMBObjCMatcher {
+        public class func beNilMatcher() -> NMBObjCMatcher {
+            return NMBObjCMatcher { actualExpression, failureMessage in
+                try! beNil().matches(actualExpression, failureMessage: failureMessage)
+            }
         }
     }
-}
 #endif

@@ -1,7 +1,7 @@
 /**
-    A container for closures to be executed before and after all examples.
-*/
-final internal class SuiteHooks {
+ A container for closures to be executed before and after all examples.
+ */
+internal final class SuiteHooks {
     internal var befores: [BeforeSuiteClosure] = []
     internal var afters: [AfterSuiteClosure] = []
     internal var phase: HooksPhase = .nothingExecuted

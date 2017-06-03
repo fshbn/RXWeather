@@ -21,17 +21,17 @@
 import Foundation
 
 #if SWIFT_PACKAGE
-import CwlCatchExceptionSupport
+    import CwlCatchExceptionSupport
 #endif
 
-private func catchReturnTypeConverter<T: NSException>(_ instance: T, block: () -> Void) -> T? {
-	// Get the type from an *instance*, instead of a receiving the type directly
-	return catchExceptionOfKind(T.self, block) as? T
+private func catchReturnTypeConverter<T: NSException>(_: T, block: () -> Void) -> T? {
+    // Get the type from an *instance*, instead of a receiving the type directly
+    return catchExceptionOfKind(T.self, block) as? T
 }
 
 extension NSException {
-	public static func catchException(in block: () -> Void) -> Self? {
-		// Use a dummy instance of Self to provide the type
-		return catchReturnTypeConverter(self.init(), block: block)
-	}
+    public static func catchException(in block: () -> Void) -> Self? {
+        // Use a dummy instance of Self to provide the type
+        return catchReturnTypeConverter(self.init(), block: block)
+    }
 }

@@ -18,13 +18,13 @@ public func match(_ expectedValue: String?) -> NonNilMatcherFunc<String> {
 
 #if _runtime(_ObjC)
 
-extension NMBObjCMatcher {
-    public class func matchMatcher(_ expected: NSString) -> NMBMatcher {
-        return NMBObjCMatcher(canMatchNil: false) { actualExpression, failureMessage in
-            let actual = actualExpression.cast { $0 as? String }
-            return try! match(expected.description).matches(actual, failureMessage: failureMessage)
+    extension NMBObjCMatcher {
+        public class func matchMatcher(_ expected: NSString) -> NMBMatcher {
+            return NMBObjCMatcher(canMatchNil: false) { actualExpression, failureMessage in
+                let actual = actualExpression.cast { $0 as? String }
+                return try! match(expected.description).matches(actual, failureMessage: failureMessage)
+            }
         }
     }
-}
 
 #endif

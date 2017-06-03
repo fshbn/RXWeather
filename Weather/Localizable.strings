@@ -1,0 +1,27 @@
+/* 
+  Localizable.strings
+  RXWeather
+
+  Created by Zafer Caliskan on 02/06/2017.
+  Copyright © 2017 Boran ASLAN. All rights reserved.
+*/
+
+// General
+"warning" = "Warning";
+"yes" = "Yes";
+"ok" = "OK";
+"no" = "No";
+"cancel" = "Cancel";
+
+// Home
+
+
+// AddLocation
+
+"add_location_new_location_title" = "New Location";
+"add_location_new_location_message" = "We're adding this place to your bookmarks?";
+"add_location_new_location_yes" = "Yes, please";
+
+// City
+
+// Help

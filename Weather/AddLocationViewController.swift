@@ -9,53 +9,107 @@
 import UIKit
 import MapKit
 
-class AddLocationViewController: UIViewController {
+#if !RX_NO_MODULE
+    import RxSwift
+    import RxCocoa
+#endif
+
+class AddLocationViewController: BaseViewController {
+
+    // MARK: - Outlets
 
     @IBOutlet weak var mapView: MKMapView!
-    
-    var viewModel: AddLocationViewModel?
+    @IBOutlet weak var closeButton: UIButton!
+
+    // MARK: - Properties
+
     var userLocation: CLLocation = CLLocation(latitude: 0, longitude: 0)
-    
+
+    // MARK: - Dependencies
+
+    // MARK: - Init
+
+    override func initDependencies() {
+        super.initDependencies()
+
+        presenter = initPresenter()
+    }
+
+    // MARK: - Lifecycle
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        self.mapView.showsUserLocation = true
-        
-        let regionRadius = 10000
+
+        configureMapView()
+    }
+
+    // MARK: - Configure
+
+    func configureMapView() {
+        mapView.showsUserLocation = true
+
+        let regionRadius = 100
         let coordinateRegion = MKCoordinateRegionMakeWithDistance(userLocation.coordinate, CLLocationDistance(regionRadius), CLLocationDistance(regionRadius))
-        self.mapView.setRegion( coordinateRegion, animated: true)
-        
+        mapView.setRegion(coordinateRegion, animated: true)
+
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(addAnnotationOnLongPress(gesture:)))
         longPressGesture.minimumPressDuration = 1.0
-        self.mapView.addGestureRecognizer(longPressGesture)
+        mapView.addGestureRecognizer(longPressGesture)
     }
-    
+
+    // MARK: - Observe
+
+    override func subscribeViewTap() {
+        super.subscribeViewTap()
+
+        _ = compositeDisposable.insert(observeCloseButtonTap())
+    }
+
+    // MARK: - Actions
+
     func addAnnotationOnLongPress(gesture: UILongPressGestureRecognizer) {
         if gesture.state == .began {
-            let point = gesture.location(in: self.mapView)
-            let coordinate = self.mapView.convert(point, toCoordinateFrom: self.mapView)
-            
-            let alert = UIAlertController(title: "New Location", message: "We're adding this place to your bookmarks?", preferredStyle: UIAlertControllerStyle.alert)
-            
-            alert.addAction(UIAlertAction(title: "No", style: UIAlertActionStyle.destructive, handler: nil))
-            
-            alert.addAction(UIAlertAction(title: "Yes, please", style: UIAlertActionStyle.default, handler: { action in
-                
-                self.viewModel?.saveBookmark(coordinate: coordinate)
-                
-                self.closeView()
+            let point = gesture.location(in: mapView)
+            let coordinate = mapView.convert(point, toCoordinateFrom: mapView)
+
+            let alert = UIAlertController(title: "add_location_new_location_title".localized, message: "add_location_new_location_message".localized, preferredStyle: UIAlertControllerStyle.alert)
+            alert.addAction(UIAlertAction(title: "no".localized, style: UIAlertActionStyle.destructive, handler: nil))
+            alert.addAction(UIAlertAction(title: "add_location_new_location_yes".localized, style: UIAlertActionStyle.default, handler: { _ in
+                self.presenter.saveBookmark(coordinate: coordinate)
+
+                self.dismiss(animated: true, completion: nil)
             }))
-            
-            self.present(alert, animated: true, completion: nil)
+            present(alert, animated: true, completion: nil)
         }
     }
-    
-    func closeView() {
-        dismiss(animated: true, completion: nil)
+
+    func observeCloseButtonTap() -> Disposable {
+        return closeButton.rx.tap
+            .asDriver()
+            .drive(onNext: { _ in
+                self.dismiss(animated: true, completion: nil)
+            })
     }
-    
-    @IBAction func closeButtonTapped(_ sender: Any) {
-        closeView()
+}
+
+// MARK: - Extensions
+
+extension AddLocationViewController {
+
+    var presenter: AddLocationPresenter {
+        set {
+            basePresenter = newValue
+        }
+        get {
+            if let presenter = basePresenter as? AddLocationPresenter {
+                return presenter
+            }
+            return initPresenter()
+        }
     }
-    
+
+    fileprivate func initPresenter() -> AddLocationPresenter {
+        let interactor = AddLocationInteractor(coreDataService: CoreDataService.sharedInstance)
+        return AddLocationPresenter(interactor: interactor)
+    }
 }

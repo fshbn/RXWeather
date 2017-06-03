@@ -20,14 +20,14 @@ final class TakeWhileSink<O: ObserverType>
         _parent = parent
         super.init(observer: observer, cancel: cancel)
     }
-    
+
     func on(_ event: Event<Element>) {
         switch event {
-        case .next(let value):
+        case let .next(value):
             if !_running {
                 return
             }
-            
+
             do {
                 _running = try _parent._predicate(value)
             } catch let e {
@@ -35,7 +35,7 @@ final class TakeWhileSink<O: ObserverType>
                 dispose()
                 return
             }
-            
+
             if _running {
                 forwardOn(.next(value))
             } else {
@@ -47,7 +47,6 @@ final class TakeWhileSink<O: ObserverType>
             dispose()
         }
     }
-    
 }
 
 final class TakeWhileSinkWithIndex<O: ObserverType>
@@ -55,33 +54,33 @@ final class TakeWhileSinkWithIndex<O: ObserverType>
     , ObserverType {
     typealias Element = O.E
     typealias Parent = TakeWhile<Element>
-    
+
     fileprivate let _parent: Parent
-    
+
     fileprivate var _running = true
     fileprivate var _index = 0
-    
+
     init(parent: Parent, observer: O, cancel: Cancelable) {
         _parent = parent
         super.init(observer: observer, cancel: cancel)
     }
-    
+
     func on(_ event: Event<Element>) {
         switch event {
-        case .next(let value):
+        case let .next(value):
             if !_running {
                 return
             }
-            
+
             do {
                 _running = try _parent._predicateWithIndex(value, _index)
-                let _ = try incrementChecked(&_index)
+                _ = try incrementChecked(&_index)
             } catch let e {
                 forwardOn(.error(e))
                 dispose()
                 return
             }
-            
+
             if _running {
                 forwardOn(.next(value))
             } else {
@@ -93,7 +92,6 @@ final class TakeWhileSinkWithIndex<O: ObserverType>
             dispose()
         }
     }
-    
 }
 
 final class TakeWhile<Element>: Producer<Element> {
@@ -109,14 +107,14 @@ final class TakeWhile<Element>: Producer<Element> {
         _predicate = predicate
         _predicateWithIndex = nil
     }
-    
+
     init(source: Observable<Element>, predicate: @escaping PredicateWithIndex) {
         _source = source
         _predicate = nil
         _predicateWithIndex = predicate
     }
-    
-    override func run<O : ObserverType>(_ observer: O, cancel: Cancelable) -> (sink: Disposable, subscription: Disposable) where O.E == Element {
+
+    override func run<O: ObserverType>(_ observer: O, cancel: Cancelable) -> (sink: Disposable, subscription: Disposable) where O.E == Element {
         if let _ = _predicate {
             let sink = TakeWhileSink(parent: self, observer: observer, cancel: cancel)
             let subscription = _source.subscribe(sink)

@@ -6,7 +6,7 @@
 //  Copyright © 2015 Krunoslav Zaher. All rights reserved.
 //
 
-let RxErrorDomain       = "RxErrorDomain"
+let RxErrorDomain = "RxErrorDomain"
 let RxCompositeFailures = "RxCompositeFailures"
 
 /// Generic Rx error codes.
@@ -35,7 +35,7 @@ extension RxError {
         switch self {
         case .unknown:
             return "Unknown error occured."
-        case .disposed(let object):
+        case let .disposed(object):
             return "Object `\(object)` was already disposed."
         case .overflow:
             return "Arithmetic overflow occured."

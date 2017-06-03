@@ -9,9 +9,9 @@
 extension Observable {
     /**
      Converts a optional to an observable sequence.
-     
+
      - seealso: [from operator on reactivex.io](http://reactivex.io/documentation/operators/from.html)
-     
+
      - parameter optional: Optional element in the resulting observable sequence.
      - returns: An observable sequence containing the wrapped value or not from given optional.
      */

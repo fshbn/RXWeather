@@ -9,59 +9,59 @@
 // MARK: distinct until changed
 
 extension ObservableType where E: Equatable {
-    
-    /**
-    Returns an observable sequence that contains only distinct contiguous elements according to equality operator.
 
-    - seealso: [distinct operator on reactivex.io](http://reactivex.io/documentation/operators/distinct.html)
-    
-    - returns: An observable sequence only containing the distinct contiguous elements, based on equality operator, from the source sequence.
-    */
+    /**
+     Returns an observable sequence that contains only distinct contiguous elements according to equality operator.
+
+     - seealso: [distinct operator on reactivex.io](http://reactivex.io/documentation/operators/distinct.html)
+
+     - returns: An observable sequence only containing the distinct contiguous elements, based on equality operator, from the source sequence.
+     */
     public func distinctUntilChanged()
         -> Observable<E> {
-        return self.distinctUntilChanged({ $0 }, comparer: { ($0 == $1) })
+        return distinctUntilChanged({ $0 }, comparer: { ($0 == $1) })
     }
 }
 
 extension ObservableType {
     /**
-    Returns an observable sequence that contains only distinct contiguous elements according to the `keySelector`.
+     Returns an observable sequence that contains only distinct contiguous elements according to the `keySelector`.
 
-    - seealso: [distinct operator on reactivex.io](http://reactivex.io/documentation/operators/distinct.html)
-    
-    - parameter keySelector: A function to compute the comparison key for each element.
-    - returns: An observable sequence only containing the distinct contiguous elements, based on a computed key value, from the source sequence.
-    */
+     - seealso: [distinct operator on reactivex.io](http://reactivex.io/documentation/operators/distinct.html)
+
+     - parameter keySelector: A function to compute the comparison key for each element.
+     - returns: An observable sequence only containing the distinct contiguous elements, based on a computed key value, from the source sequence.
+     */
     public func distinctUntilChanged<K: Equatable>(_ keySelector: @escaping (E) throws -> K)
         -> Observable<E> {
-        return self.distinctUntilChanged(keySelector, comparer: { $0 == $1 })
+        return distinctUntilChanged(keySelector, comparer: { $0 == $1 })
     }
 
     /**
-    Returns an observable sequence that contains only distinct contiguous elements according to the `comparer`.
+     Returns an observable sequence that contains only distinct contiguous elements according to the `comparer`.
 
-    - seealso: [distinct operator on reactivex.io](http://reactivex.io/documentation/operators/distinct.html)
-    
-    - parameter comparer: Equality comparer for computed key values.
-    - returns: An observable sequence only containing the distinct contiguous elements, based on `comparer`, from the source sequence.
-    */
+     - seealso: [distinct operator on reactivex.io](http://reactivex.io/documentation/operators/distinct.html)
+
+     - parameter comparer: Equality comparer for computed key values.
+     - returns: An observable sequence only containing the distinct contiguous elements, based on `comparer`, from the source sequence.
+     */
     public func distinctUntilChanged(_ comparer: @escaping (E, E) throws -> Bool)
         -> Observable<E> {
-        return self.distinctUntilChanged({ $0 }, comparer: comparer)
+        return distinctUntilChanged({ $0 }, comparer: comparer)
     }
-    
-    /**
-    Returns an observable sequence that contains only distinct contiguous elements according to the keySelector and the comparer.
 
-    - seealso: [distinct operator on reactivex.io](http://reactivex.io/documentation/operators/distinct.html)
-    
-    - parameter keySelector: A function to compute the comparison key for each element.
-    - parameter comparer: Equality comparer for computed key values.
-    - returns: An observable sequence only containing the distinct contiguous elements, based on a computed key value and the comparer, from the source sequence.
-    */
+    /**
+     Returns an observable sequence that contains only distinct contiguous elements according to the keySelector and the comparer.
+
+     - seealso: [distinct operator on reactivex.io](http://reactivex.io/documentation/operators/distinct.html)
+
+     - parameter keySelector: A function to compute the comparison key for each element.
+     - parameter comparer: Equality comparer for computed key values.
+     - returns: An observable sequence only containing the distinct contiguous elements, based on a computed key value and the comparer, from the source sequence.
+     */
     public func distinctUntilChanged<K>(_ keySelector: @escaping (E) throws -> K, comparer: @escaping (K, K) throws -> Bool)
         -> Observable<E> {
-        return DistinctUntilChanged(source: self.asObservable(), selector: keySelector, comparer: comparer)
+        return DistinctUntilChanged(source: asObservable(), selector: keySelector, comparer: comparer)
     }
 }
 
@@ -79,137 +79,137 @@ extension ObservableType {
      - parameter onSubscribe: Action to invoke before subscribing to source observable sequence.
      - parameter onSubscribed: Action to invoke after subscribing to source observable sequence.
      - parameter onDispose: Action to invoke after subscription to source observable has been disposed for any reason. It can be either because sequence terminates for some reason or observer subscription being disposed.
-    - returns: The source sequence with the side-effecting behavior applied.
+     - returns: The source sequence with the side-effecting behavior applied.
      */
-    public func `do`(onNext: ((E) throws -> Void)? = nil, onError: ((Swift.Error) throws -> Void)? = nil, onCompleted: (() throws -> Void)? = nil, onSubscribe: (() -> ())? = nil, onSubscribed: (() -> ())? = nil, onDispose: (() -> ())? = nil)
+    public func `do`(onNext: ((E) throws -> Void)? = nil, onError: ((Swift.Error) throws -> Void)? = nil, onCompleted: (() throws -> Void)? = nil, onSubscribe: (() -> Void)? = nil, onSubscribed: (() -> Void)? = nil, onDispose: (() -> Void)? = nil)
         -> Observable<E> {
-            return Do(source: self.asObservable(), eventHandler: { e in
-                switch e {
-                case .next(let element):
-                    try onNext?(element)
-                case .error(let e):
-                    try onError?(e)
-                case .completed:
-                    try onCompleted?()
-                }
-            }, onSubscribe: onSubscribe, onSubscribed: onSubscribed, onDispose: onDispose)
+        return Do(source: asObservable(), eventHandler: { e in
+            switch e {
+            case let .next(element):
+                try onNext?(element)
+            case let .error(e):
+                try onError?(e)
+            case .completed:
+                try onCompleted?()
+            }
+        }, onSubscribe: onSubscribe, onSubscribed: onSubscribed, onDispose: onDispose)
     }
 }
 
 // MARK: startWith
 
 extension ObservableType {
-    
-    /**
-    Prepends a sequence of values to an observable sequence.
 
-    - seealso: [startWith operator on reactivex.io](http://reactivex.io/documentation/operators/startwith.html)
-    
-    - parameter elements: Elements to prepend to the specified sequence.
-    - returns: The source sequence prepended with the specified values.
-    */
+    /**
+     Prepends a sequence of values to an observable sequence.
+
+     - seealso: [startWith operator on reactivex.io](http://reactivex.io/documentation/operators/startwith.html)
+
+     - parameter elements: Elements to prepend to the specified sequence.
+     - returns: The source sequence prepended with the specified values.
+     */
     public func startWith(_ elements: E ...)
         -> Observable<E> {
-        return StartWith(source: self.asObservable(), elements: elements)
+        return StartWith(source: asObservable(), elements: elements)
     }
 }
 
 // MARK: retry
 
 extension ObservableType {
-    
-    /**
-    Repeats the source observable sequence until it successfully terminates.
-    
-    **This could potentially create an infinite sequence.**
 
-    - seealso: [retry operator on reactivex.io](http://reactivex.io/documentation/operators/retry.html)
-    
-    - returns: Observable sequence to repeat until it successfully terminates.
-    */
+    /**
+     Repeats the source observable sequence until it successfully terminates.
+
+     **This could potentially create an infinite sequence.**
+
+     - seealso: [retry operator on reactivex.io](http://reactivex.io/documentation/operators/retry.html)
+
+     - returns: Observable sequence to repeat until it successfully terminates.
+     */
     public func retry() -> Observable<E> {
-        return CatchSequence(sources: InfiniteSequence(repeatedValue: self.asObservable()))
+        return CatchSequence(sources: InfiniteSequence(repeatedValue: asObservable()))
     }
 
     /**
-    Repeats the source observable sequence the specified number of times in case of an error or until it successfully terminates.
-    
-    If you encounter an error and want it to retry once, then you must use `retry(2)`
+     Repeats the source observable sequence the specified number of times in case of an error or until it successfully terminates.
 
-    - seealso: [retry operator on reactivex.io](http://reactivex.io/documentation/operators/retry.html)
+     If you encounter an error and want it to retry once, then you must use `retry(2)`
 
-    - parameter maxAttemptCount: Maximum number of times to repeat the sequence.
-    - returns: An observable sequence producing the elements of the given sequence repeatedly until it terminates successfully.
-    */
+     - seealso: [retry operator on reactivex.io](http://reactivex.io/documentation/operators/retry.html)
+
+     - parameter maxAttemptCount: Maximum number of times to repeat the sequence.
+     - returns: An observable sequence producing the elements of the given sequence repeatedly until it terminates successfully.
+     */
     public func retry(_ maxAttemptCount: Int)
         -> Observable<E> {
-        return CatchSequence(sources: repeatElement(self.asObservable(), count: maxAttemptCount))
+        return CatchSequence(sources: repeatElement(asObservable(), count: maxAttemptCount))
     }
-    
-    /**
-    Repeats the source observable sequence on error when the notifier emits a next value.
-    If the source observable errors and the notifier completes, it will complete the source sequence.
 
-    - seealso: [retry operator on reactivex.io](http://reactivex.io/documentation/operators/retry.html)
-    
-    - parameter notificationHandler: A handler that is passed an observable sequence of errors raised by the source observable and returns and observable that either continues, completes or errors. This behavior is then applied to the source observable.
-    - returns: An observable sequence producing the elements of the given sequence repeatedly until it terminates successfully or is notified to error or complete.
-    */
+    /**
+     Repeats the source observable sequence on error when the notifier emits a next value.
+     If the source observable errors and the notifier completes, it will complete the source sequence.
+
+     - seealso: [retry operator on reactivex.io](http://reactivex.io/documentation/operators/retry.html)
+
+     - parameter notificationHandler: A handler that is passed an observable sequence of errors raised by the source observable and returns and observable that either continues, completes or errors. This behavior is then applied to the source observable.
+     - returns: An observable sequence producing the elements of the given sequence repeatedly until it terminates successfully or is notified to error or complete.
+     */
     public func retryWhen<TriggerObservable: ObservableType, Error: Swift.Error>(_ notificationHandler: @escaping (Observable<Error>) -> TriggerObservable)
         -> Observable<E> {
-            return RetryWhenSequence(sources: InfiniteSequence(repeatedValue: self.asObservable()), notificationHandler: notificationHandler)
+        return RetryWhenSequence(sources: InfiniteSequence(repeatedValue: asObservable()), notificationHandler: notificationHandler)
     }
 
     /**
-    Repeats the source observable sequence on error when the notifier emits a next value.
-    If the source observable errors and the notifier completes, it will complete the source sequence.
+     Repeats the source observable sequence on error when the notifier emits a next value.
+     If the source observable errors and the notifier completes, it will complete the source sequence.
 
-    - seealso: [retry operator on reactivex.io](http://reactivex.io/documentation/operators/retry.html)
-    
-    - parameter notificationHandler: A handler that is passed an observable sequence of errors raised by the source observable and returns and observable that either continues, completes or errors. This behavior is then applied to the source observable.
-    - returns: An observable sequence producing the elements of the given sequence repeatedly until it terminates successfully or is notified to error or complete.
-    */
+     - seealso: [retry operator on reactivex.io](http://reactivex.io/documentation/operators/retry.html)
+
+     - parameter notificationHandler: A handler that is passed an observable sequence of errors raised by the source observable and returns and observable that either continues, completes or errors. This behavior is then applied to the source observable.
+     - returns: An observable sequence producing the elements of the given sequence repeatedly until it terminates successfully or is notified to error or complete.
+     */
     public func retryWhen<TriggerObservable: ObservableType>(_ notificationHandler: @escaping (Observable<Swift.Error>) -> TriggerObservable)
         -> Observable<E> {
-            return RetryWhenSequence(sources: InfiniteSequence(repeatedValue: self.asObservable()), notificationHandler: notificationHandler)
+        return RetryWhenSequence(sources: InfiniteSequence(repeatedValue: asObservable()), notificationHandler: notificationHandler)
     }
 }
 
 // MARK: scan
 
 extension ObservableType {
-    
+
     /**
-    Applies an accumulator function over an observable sequence and returns each intermediate result. The specified seed value is used as the initial accumulator value.
+     Applies an accumulator function over an observable sequence and returns each intermediate result. The specified seed value is used as the initial accumulator value.
 
-    For aggregation behavior with no intermediate results, see `reduce`.
+     For aggregation behavior with no intermediate results, see `reduce`.
 
-    - seealso: [scan operator on reactivex.io](http://reactivex.io/documentation/operators/scan.html)
-    
-    - parameter seed: The initial accumulator value.
-    - parameter accumulator: An accumulator function to be invoked on each element.
-    - returns: An observable sequence containing the accumulated values.
-    */
+     - seealso: [scan operator on reactivex.io](http://reactivex.io/documentation/operators/scan.html)
+
+     - parameter seed: The initial accumulator value.
+     - parameter accumulator: An accumulator function to be invoked on each element.
+     - returns: An observable sequence containing the accumulated values.
+     */
     public func scan<A>(_ seed: A, accumulator: @escaping (A, E) throws -> A)
         -> Observable<A> {
-        return Scan(source: self.asObservable(), seed: seed, accumulator: accumulator)
+        return Scan(source: asObservable(), seed: seed, accumulator: accumulator)
     }
 }
 
 // MARK: defaultIfEmpty
 
 extension ObservableType {
-    
+
     /**
      Emits elements from the source observable sequence, or a default element if the source observable sequence is empty.
-     
+
      - seealso: [DefaultIfEmpty operator on reactivex.io](http://reactivex.io/documentation/operators/defaultifempty.html)
-     
+
      - parameter default: Default element to be sent if the source does not emit any elements
      - returns: An observable sequence which emits default element end completes in case the original sequence is empty
      */
     public func ifEmpty(default: E) -> Observable<E> {
-        return DefaultIfEmpty(source: self.asObservable(), default: `default`)
+        return DefaultIfEmpty(source: asObservable(), default: `default`)
     }
 }
 
@@ -225,7 +225,7 @@ extension ObservableType {
     public func ignoreElements()
         -> Observable<E> {
         return filter { _ -> Bool in
-            return false
+            false
         }
     }
 }
@@ -239,7 +239,7 @@ extension ObservableType {
      - returns: An observable sequence that wraps events in an Event<E>. The returned Observable never errors, but it does complete after observing all of the events of the underlying Observable.
      */
     public func materialize() -> Observable<Event<E>> {
-        return Materialize(source: self.asObservable())
+        return Materialize(source: asObservable())
     }
 }
 
@@ -250,7 +250,6 @@ extension ObservableType where E: EventConvertible {
      - returns: The dematerialized observable sequence.
      */
     public func dematerialize() -> Observable<E.ElementType> {
-        return Dematerialize(source: self.asObservable())
+        return Dematerialize(source: asObservable())
     }
-    
 }

@@ -32,10 +32,10 @@ final class SchedulePeriodicRecursive<State> {
     }
 
     func start() -> Disposable {
-        return _scheduler.scheduleRecursive(SchedulePeriodicRecursiveCommand.tick, dueTime: _startAfter, action: self.tick)
+        return _scheduler.scheduleRecursive(SchedulePeriodicRecursiveCommand.tick, dueTime: _startAfter, action: tick)
     }
 
-    func tick(_ command: SchedulePeriodicRecursiveCommand, scheduler: RecursiveScheduler) -> Void {
+    func tick(_ command: SchedulePeriodicRecursiveCommand, scheduler: RecursiveScheduler) {
         // Tries to emulate periodic scheduling as best as possible.
         // The problem that could arise is if handling periodic ticks take too long, or
         // tick interval is short.
@@ -46,7 +46,7 @@ final class SchedulePeriodicRecursive<State> {
             // The idea is that if on tick there wasn't any item enqueued, schedule to perform work immediatelly.
             // Else work will be scheduled after previous enqueued work completes.
             if AtomicIncrement(&_pendingTickCount) == 1 {
-                self.tick(.dispatchStart, scheduler: scheduler)
+                tick(.dispatchStart, scheduler: scheduler)
             }
 
         case .dispatchStart:

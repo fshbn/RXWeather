@@ -15,4 +15,3 @@ enum WeatherError: String, Error {
     case JSONResponseError = "We got Unidentified JSON Objects from server."
     case JSONParseError = "There is something unexpected happened."
 }
-

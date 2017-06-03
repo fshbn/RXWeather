@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12120" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="DNA-r4-HS6">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Add Location View Controller-->
+        <scene sceneID="LJx-Ra-TLq">
+            <objects>
+                <viewController id="DNA-r4-HS6" customClass="AddLocationViewController" customModule="RXWeather" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="vOB-ci-Uzi"/>
+                        <viewControllerLayoutGuide type="bottom" id="pQ0-aa-53z"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="dte-ic-1Mb">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="d1H-NM-Z6C">
+                                <rect key="frame" x="0.0" y="617" width="375" height="50"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="v4o-ua-G4b">
+                                        <rect key="frame" x="176" y="14" width="22" height="22"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="22" id="3L4-J6-QhO"/>
+                                            <constraint firstAttribute="width" constant="22" id="JvZ-Pz-JwW"/>
+                                        </constraints>
+                                        <state key="normal" backgroundImage="cancel"/>
+                                        <connections>
+                                            <action selector="closeButtonTapped:" destination="DNA-r4-HS6" eventType="touchUpInside" id="vxL-bs-DBB"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" red="0.99924379590000001" green="0.1582126915" blue="0.2827935815" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstItem="v4o-ua-G4b" firstAttribute="centerY" secondItem="d1H-NM-Z6C" secondAttribute="centerY" id="Sa7-Fx-gq6"/>
+                                    <constraint firstAttribute="height" constant="50" id="mVH-Dg-qjp"/>
+                                    <constraint firstItem="v4o-ua-G4b" firstAttribute="centerX" secondItem="d1H-NM-Z6C" secondAttribute="centerX" id="wY9-k7-iQ7"/>
+                                </constraints>
+                            </view>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" pitchEnabled="NO" showsUserLocation="YES" translatesAutoresizingMaskIntoConstraints="NO" id="XCI-zO-3ab">
+                                <rect key="frame" x="0.0" y="101" width="375" height="516"/>
+                                <connections>
+                                    <outlet property="delegate" destination="DNA-r4-HS6" id="USs-zi-80e"/>
+                                </connections>
+                            </mapView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Keep pressing for 2 seconds to add a place to your bookmarks." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QZj-0y-1hR">
+                                <rect key="frame" x="16" y="37" width="343" height="46"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="46" id="CnI-1L-GyH"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.72103316319999999" green="0.72103316319999999" blue="0.72103316319999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" red="0.98039215690000003" green="0.98039215690000003" blue="0.98039215690000003" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstItem="d1H-NM-Z6C" firstAttribute="top" secondItem="XCI-zO-3ab" secondAttribute="bottom" id="3xU-mk-Sh0"/>
+                            <constraint firstItem="pQ0-aa-53z" firstAttribute="top" secondItem="d1H-NM-Z6C" secondAttribute="bottom" id="6TQ-da-zZL"/>
+                            <constraint firstItem="QZj-0y-1hR" firstAttribute="leading" secondItem="dte-ic-1Mb" secondAttribute="leadingMargin" id="MTx-JS-GMB"/>
+                            <constraint firstItem="QZj-0y-1hR" firstAttribute="trailing" secondItem="dte-ic-1Mb" secondAttribute="trailingMargin" id="Q3O-1a-MdH"/>
+                            <constraint firstItem="QZj-0y-1hR" firstAttribute="top" secondItem="vOB-ci-Uzi" secondAttribute="bottom" constant="17" id="QRG-tu-MPL"/>
+                            <constraint firstItem="XCI-zO-3ab" firstAttribute="top" secondItem="QZj-0y-1hR" secondAttribute="bottom" constant="18" id="RfO-Af-YXq"/>
+                            <constraint firstItem="XCI-zO-3ab" firstAttribute="leading" secondItem="dte-ic-1Mb" secondAttribute="leading" id="VFV-5O-laG"/>
+                            <constraint firstAttribute="trailing" secondItem="d1H-NM-Z6C" secondAttribute="trailing" id="aj0-RV-GBD"/>
+                            <constraint firstItem="d1H-NM-Z6C" firstAttribute="leading" secondItem="dte-ic-1Mb" secondAttribute="leading" id="dF8-vC-Bd9"/>
+                            <constraint firstItem="XCI-zO-3ab" firstAttribute="top" secondItem="QZj-0y-1hR" secondAttribute="bottom" constant="18" id="eMB-kc-0li"/>
+                            <constraint firstAttribute="trailing" secondItem="XCI-zO-3ab" secondAttribute="trailing" id="g8J-5P-A8A"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="closeButton" destination="v4o-ua-G4b" id="IdR-eg-zJ8"/>
+                        <outlet property="mapView" destination="XCI-zO-3ab" id="l0W-Ji-uR7"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="LNc-eu-f66" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1228" y="135"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="cancel" width="16" height="16"/>
+    </resources>
+</document>

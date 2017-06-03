@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12120" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="UMa-q9-gJv">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Help View Controller-->
+        <scene sceneID="Zmb-6I-Qi0">
+            <objects>
+                <viewController id="UMa-q9-gJv" customClass="HelpViewController" customModule="RXWeather" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="eQ8-CR-igf"/>
+                        <viewControllerLayoutGuide type="bottom" id="TJv-L1-i38"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="2JO-ar-Okc">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9N4-l2-5yI">
+                                <rect key="frame" x="0.0" y="617" width="375" height="50"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uSa-GZ-4Qs">
+                                        <rect key="frame" x="176" y="14" width="22" height="22"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="22" id="0dY-Sy-1GP"/>
+                                            <constraint firstAttribute="height" constant="22" id="MTT-e3-Wam"/>
+                                        </constraints>
+                                        <state key="normal" backgroundImage="cancel"/>
+                                        <connections>
+                                            <action selector="closeButtonTapped:" destination="UMa-q9-gJv" eventType="touchUpInside" id="FnJ-Ux-ixo"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" red="1" green="0.15686274510000001" blue="0.28235294119999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="Ijz-ns-CIY"/>
+                                    <constraint firstItem="uSa-GZ-4Qs" firstAttribute="centerX" secondItem="9N4-l2-5yI" secondAttribute="centerX" id="MOA-WP-Zpy"/>
+                                    <constraint firstItem="uSa-GZ-4Qs" firstAttribute="centerY" secondItem="9N4-l2-5yI" secondAttribute="centerY" id="OBx-tl-Ekg"/>
+                                </constraints>
+                            </view>
+                            <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wf2-gX-JMr">
+                                <rect key="frame" x="0.0" y="28" width="375" height="581"/>
+                                <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <connections>
+                                    <outlet property="delegate" destination="UMa-q9-gJv" id="u0J-wz-riJ"/>
+                                </connections>
+                            </webView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="wf2-gX-JMr" firstAttribute="top" secondItem="eQ8-CR-igf" secondAttribute="bottom" constant="8" id="2Ga-pd-ttN"/>
+                            <constraint firstItem="9N4-l2-5yI" firstAttribute="top" secondItem="wf2-gX-JMr" secondAttribute="bottom" constant="8" id="FmH-dq-n2b"/>
+                            <constraint firstItem="9N4-l2-5yI" firstAttribute="bottom" secondItem="TJv-L1-i38" secondAttribute="top" id="N8W-BF-WxF"/>
+                            <constraint firstAttribute="trailing" secondItem="wf2-gX-JMr" secondAttribute="trailing" id="Nhf-Ql-Ohj"/>
+                            <constraint firstItem="9N4-l2-5yI" firstAttribute="leading" secondItem="2JO-ar-Okc" secondAttribute="leading" id="Tga-bu-Ne9"/>
+                            <constraint firstAttribute="trailing" secondItem="9N4-l2-5yI" secondAttribute="trailing" id="qw7-ml-GN2"/>
+                            <constraint firstItem="wf2-gX-JMr" firstAttribute="leading" secondItem="2JO-ar-Okc" secondAttribute="leading" id="tlO-F8-TU6"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="closeButton" destination="uSa-GZ-4Qs" id="SEH-1g-1xz"/>
+                        <outlet property="webView" destination="wf2-gX-JMr" id="pOl-XT-QZV"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="3nC-Ha-aJ7" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1129" y="-600"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="cancel" width="16" height="16"/>
+    </resources>
+</document>

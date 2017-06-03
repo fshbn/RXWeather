@@ -30,47 +30,47 @@ public class NimbleShortXCTestHandler: AssertionHandler {
 /// Fallback handler in case XCTest is unavailable. This assertion handler will abort
 /// the program if it is invoked.
 class NimbleXCTestUnavailableHandler: AssertionHandler {
-    func assert(_ assertion: Bool, message: FailureMessage, location: SourceLocation) {
+    func assert(_: Bool, message _: FailureMessage, location _: SourceLocation) {
         fatalError("XCTest is not available and no custom assertion handler was configured. Aborting.")
     }
 }
 
 #if !SWIFT_PACKAGE
-/// Helper class providing access to the currently executing XCTestCase instance, if any
-@objc final internal class CurrentTestCaseTracker: NSObject, XCTestObservation {
-    @objc static let sharedInstance = CurrentTestCaseTracker()
+    /// Helper class providing access to the currently executing XCTestCase instance, if any
+    @objc internal final class CurrentTestCaseTracker: NSObject, XCTestObservation {
+        @objc static let sharedInstance = CurrentTestCaseTracker()
 
-    private(set) var currentTestCase: XCTestCase?
+        private(set) var currentTestCase: XCTestCase?
 
-    @objc func testCaseWillStart(_ testCase: XCTestCase) {
-        currentTestCase = testCase
+        @objc func testCaseWillStart(_ testCase: XCTestCase) {
+            currentTestCase = testCase
+        }
+
+        @objc func testCaseDidFinish(_: XCTestCase) {
+            currentTestCase = nil
+        }
     }
-
-    @objc func testCaseDidFinish(_ testCase: XCTestCase) {
-        currentTestCase = nil
-    }
-}
 #endif
 
 func isXCTestAvailable() -> Bool {
-#if _runtime(_ObjC)
-    // XCTest is weakly linked and so may not be present
-    return NSClassFromString("XCTestCase") != nil
-#else
-    return true
-#endif
+    #if _runtime(_ObjC)
+        // XCTest is weakly linked and so may not be present
+        return NSClassFromString("XCTestCase") != nil
+    #else
+        return true
+    #endif
 }
 
 private func recordFailure(_ message: String, location: SourceLocation) {
-#if SWIFT_PACKAGE
-    XCTFail("\(message)", file: location.file, line: location.line)
-#else
-    if let testCase = CurrentTestCaseTracker.sharedInstance.currentTestCase {
-        testCase.recordFailure(withDescription: message, inFile: location.file, atLine: location.line, expected: true)
-    } else {
-        let msg = "Attempted to report a test failure to XCTest while no test case was running. " +
-        "The failure was:\n\"\(message)\"\nIt occurred at: \(location.file):\(location.line)"
-        NSException(name: .internalInconsistencyException, reason: msg, userInfo: nil).raise()
-    }
-#endif
+    #if SWIFT_PACKAGE
+        XCTFail("\(message)", file: location.file, line: location.line)
+    #else
+        if let testCase = CurrentTestCaseTracker.sharedInstance.currentTestCase {
+            testCase.recordFailure(withDescription: message, inFile: location.file, atLine: location.line, expected: true)
+        } else {
+            let msg = "Attempted to report a test failure to XCTest while no test case was running. " +
+                "The failure was:\n\"\(message)\"\nIt occurred at: \(location.file):\(location.line)"
+            NSException(name: .internalInconsistencyException, reason: msg, userInfo: nil).raise()
+        }
+    #endif
 }

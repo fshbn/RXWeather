@@ -26,17 +26,17 @@ final class ShareReplay1<Element>
     private var _observers = Observers()
 
     init(source: Observable<Element>) {
-        self._source = source
+        _source = source
     }
 
-    override func subscribe<O : ObserverType>(_ observer: O) -> Disposable where O.E == E {
+    override func subscribe<O: ObserverType>(_ observer: O) -> Disposable where O.E == E {
         _lock.lock()
         let result = _synchronized_subscribe(observer)
         _lock.unlock()
         return result
     }
 
-    func _synchronized_subscribe<O : ObserverType>(_ observer: O) -> Disposable where O.E == E {
+    func _synchronized_subscribe<O: ObserverType>(_ observer: O) -> Disposable where O.E == E {
         if let element = self._element {
             observer.on(.next(element))
         }
@@ -46,15 +46,15 @@ final class ShareReplay1<Element>
             return Disposables.create()
         }
 
-        let initialCount = self._observers.count
+        let initialCount = _observers.count
 
-        let disposeKey = self._observers.insert(observer.on)
+        let disposeKey = _observers.insert(observer.on)
 
         if initialCount == 0 {
             let connection = SingleAssignmentDisposable()
             _connection = connection
 
-            connection.setDisposable(self._source.subscribe(self))
+            connection.setDisposable(_source.subscribe(self))
         }
 
         return SubscriptionDisposable(owner: self, key: disposeKey)
@@ -68,7 +68,7 @@ final class ShareReplay1<Element>
 
     func _synchronized_unsubscribe(_ disposeKey: DisposeKey) {
         // if already unsubscribed, just return
-        if self._observers.removeKey(disposeKey) == nil {
+        if _observers.removeKey(disposeKey) == nil {
             return
         }
 
@@ -89,7 +89,7 @@ final class ShareReplay1<Element>
         }
 
         switch event {
-        case .next(let element):
+        case let .next(element):
             _element = element
         case .error, .completed:
             _stopEvent = event
@@ -97,8 +97,7 @@ final class ShareReplay1<Element>
             _connection?.dispose()
             _connection = nil
         }
-        
+
         return _observers
     }
-    
 }

@@ -6,7 +6,7 @@
 //  Copyright © 2015 Krunoslav Zaher. All rights reserved.
 //
 
-final class AnonymousObservableSink<O: ObserverType> : Sink<O>, ObserverType {
+final class AnonymousObservableSink<O: ObserverType>: Sink<O>, ObserverType {
     typealias E = O.E
     typealias Parent = AnonymousObservable<E>
 
@@ -29,7 +29,7 @@ final class AnonymousObservableSink<O: ObserverType> : Sink<O>, ObserverType {
 
             defer {
                 _ = AtomicDecrement(&_numberOfConcurrentCalls)
-        }
+            }
         #endif
         switch event {
         case .next:
@@ -50,7 +50,7 @@ final class AnonymousObservableSink<O: ObserverType> : Sink<O>, ObserverType {
     }
 }
 
-final class AnonymousObservable<Element> : Producer<Element> {
+final class AnonymousObservable<Element>: Producer<Element> {
     typealias SubscribeHandler = (AnyObserver<Element>) -> Disposable
 
     let _subscribeHandler: SubscribeHandler
@@ -59,7 +59,7 @@ final class AnonymousObservable<Element> : Producer<Element> {
         _subscribeHandler = subscribeHandler
     }
 
-    override func run<O : ObserverType>(_ observer: O, cancel: Cancelable) -> (sink: Disposable, subscription: Disposable) where O.E == Element {
+    override func run<O: ObserverType>(_ observer: O, cancel: Cancelable) -> (sink: Disposable, subscription: Disposable) where O.E == Element {
         let sink = AnonymousObservableSink(observer: observer, cancel: cancel)
         let subscription = sink.run(self)
         return (sink: sink, subscription: subscription)

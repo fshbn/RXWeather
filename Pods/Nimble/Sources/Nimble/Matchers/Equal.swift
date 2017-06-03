@@ -171,11 +171,11 @@ public func !=<T: Equatable, C: Equatable>(lhs: Expectation<[T: C]>, rhs: [T: C]
 }
 
 #if _runtime(_ObjC)
-extension NMBObjCMatcher {
-    public class func equalMatcher(_ expected: NSObject) -> NMBMatcher {
-        return NMBObjCMatcher(canMatchNil: false) { actualExpression, failureMessage in
-            return try! equal(expected).matches(actualExpression, failureMessage: failureMessage)
+    extension NMBObjCMatcher {
+        public class func equalMatcher(_ expected: NSObject) -> NMBMatcher {
+            return NMBObjCMatcher(canMatchNil: false) { actualExpression, failureMessage in
+                try! equal(expected).matches(actualExpression, failureMessage: failureMessage)
+            }
         }
     }
-}
 #endif
