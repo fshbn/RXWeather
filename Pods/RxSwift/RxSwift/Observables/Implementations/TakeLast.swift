@@ -6,26 +6,26 @@
 //  Copyright © 2015 Krunoslav Zaher. All rights reserved.
 //
 
-final class TakeLastSink<O: ObserverType> : Sink<O>, ObserverType {
+final class TakeLastSink<O: ObserverType>: Sink<O>, ObserverType {
     typealias E = O.E
     typealias Parent = TakeLast<E>
-    
+
     private let _parent: Parent
-    
+
     private var _elements: Queue<E>
-    
+
     init(parent: Parent, observer: O, cancel: Cancelable) {
         _parent = parent
         _elements = Queue<E>(capacity: parent._count + 1)
         super.init(observer: observer, cancel: cancel)
     }
-    
+
     func on(_ event: Event<E>) {
         switch event {
-        case .next(let value):
+        case let .next(value):
             _elements.enqueue(value)
-            if _elements.count > self._parent._count {
-                let _ = _elements.dequeue()
+            if _elements.count > _parent._count {
+                _ = _elements.dequeue()
             }
         case .error:
             forwardOn(event)
@@ -43,7 +43,7 @@ final class TakeLastSink<O: ObserverType> : Sink<O>, ObserverType {
 final class TakeLast<Element>: Producer<Element> {
     fileprivate let _source: Observable<Element>
     fileprivate let _count: Int
-    
+
     init(source: Observable<Element>, count: Int) {
         if count < 0 {
             rxFatalError("count can't be negative")
@@ -51,8 +51,8 @@ final class TakeLast<Element>: Producer<Element> {
         _source = source
         _count = count
     }
-    
-    override func run<O : ObserverType>(_ observer: O, cancel: Cancelable) -> (sink: Disposable, subscription: Disposable) where O.E == Element {
+
+    override func run<O: ObserverType>(_ observer: O, cancel: Cancelable) -> (sink: Disposable, subscription: Disposable) where O.E == Element {
         let sink = TakeLastSink(parent: self, observer: observer, cancel: cancel)
         let subscription = _source.subscribe(sink)
         return (sink: sink, subscription: subscription)

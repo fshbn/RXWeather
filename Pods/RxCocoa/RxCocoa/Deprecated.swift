@@ -23,7 +23,7 @@ extension ObservableType {
      */
     @available(*, deprecated, renamed: "bind(to:)")
     public func bindTo<O: ObserverType>(_ observer: O) -> Disposable where O.E == E {
-        return self.subscribe(observer)
+        return subscribe(observer)
     }
 
     /**
@@ -37,7 +37,7 @@ extension ObservableType {
      */
     @available(*, deprecated, renamed: "bind(to:)")
     public func bindTo<O: ObserverType>(_ observer: O) -> Disposable where O.E == E? {
-        return self.map { $0 }.subscribe(observer)
+        return map { $0 }.subscribe(observer)
     }
 
     /**
@@ -79,7 +79,7 @@ extension ObservableType {
      */
     @available(*, deprecated, renamed: "bind(to:)")
     public func bindTo(_ variable: Variable<E?>) -> Disposable {
-        return self.map { $0 as E? }.bindTo(variable)
+        return map { $0 as E? }.bindTo(variable)
     }
 
     /**
@@ -109,7 +109,6 @@ extension ObservableType {
     public func bindTo<R1, R2>(_ binder: (Self) -> (R1) -> R2, curriedArgument: R1) -> R2 {
         return binder(self)(curriedArgument)
     }
-
 
     /**
      Subscribes an element handler to an observable sequence.

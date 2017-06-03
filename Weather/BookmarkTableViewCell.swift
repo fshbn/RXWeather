@@ -10,8 +10,9 @@ import UIKit
 
 class BookmarkTableViewCell: UITableViewCell {
 
+    static let identifier = "BookmarkTableViewCell"
+
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var temperatureLabel: UILabel!
     @IBOutlet weak var iconLabel: UILabel!
-    
 }

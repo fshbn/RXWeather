@@ -16,7 +16,7 @@ import RxSwift
 final class HotObservable<Element>
     : TestableObservable<Element> {
 
-    typealias Observer = (Event<Element>) -> ()
+    typealias Observer = (Event<Element>) -> Void
     typealias Observers = Bag<Observer>
 
     /// Current subscribed observers.
@@ -24,11 +24,11 @@ final class HotObservable<Element>
 
     override init(testScheduler: TestScheduler, recordedEvents: [Recorded<Event<Element>>]) {
         _observers = Observers()
-        
+
         super.init(testScheduler: testScheduler, recordedEvents: recordedEvents)
 
         for recordedEvent in recordedEvents {
-            testScheduler.scheduleAt(recordedEvent.time) { t in
+            testScheduler.scheduleAt(recordedEvent.time) { _ in
                 self._observers.forEach {
                     $0(recordedEvent.value)
                 }
@@ -37,19 +37,18 @@ final class HotObservable<Element>
     }
 
     /// Subscribes `observer` to receive events for this sequence.
-    override func subscribe<O : ObserverType>(_ observer: O) -> Disposable where O.E == Element {
+    override func subscribe<O: ObserverType>(_ observer: O) -> Disposable where O.E == Element {
         let key = _observers.insert(observer.on)
-        subscriptions.append(Subscription(self.testScheduler.clock))
-        
-        let i = self.subscriptions.count - 1
-        
+        subscriptions.append(Subscription(testScheduler.clock))
+
+        let i = subscriptions.count - 1
+
         return Disposables.create {
             let removed = self._observers.removeKey(key)
             assert(removed != nil)
-            
+
             let existing = self.subscriptions[i]
             self.subscriptions[i] = Subscription(existing.subscribe, self.testScheduler.clock)
         }
     }
 }
-

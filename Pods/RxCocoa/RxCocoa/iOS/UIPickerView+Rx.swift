@@ -7,10 +7,10 @@
 //
 
 #if os(iOS)
-    
-#if !RX_NO_MODULE
-    import RxSwift
-#endif
+
+    #if !RX_NO_MODULE
+        import RxSwift
+    #endif
     import UIKit
 
     extension UIPickerView {
@@ -21,9 +21,8 @@
         public func createRxDelegateProxy() -> RxPickerViewDelegateProxy {
             return RxPickerViewDelegateProxy(parentObject: self)
         }
-        
     }
-    
+
     extension Reactive where Base: UIPickerView {
 
         /// Reactive wrapper for `delegate`.
@@ -31,7 +30,7 @@
         public var delegate: DelegateProxy {
             return RxPickerViewDelegateProxy.proxyForObject(base)
         }
-        
+
         public var itemSelected: ControlEvent<(Int, Int)> {
             let source = delegate
                 .methodInvoked(#selector(UIPickerViewDelegate.pickerView(_:didSelectRow:inComponent:)))

@@ -7,11 +7,11 @@
 //
 
 /**
-Represents a disposable resource which only allows a single assignment of its underlying disposable resource.
+ Represents a disposable resource which only allows a single assignment of its underlying disposable resource.
 
-If an underlying disposable resource has already been set, future attempts to set the underlying disposable resource will throw an exception.
-*/
-public final class SingleAssignmentDisposable : DisposeBase, Disposable, Cancelable {
+ If an underlying disposable resource has already been set, future attempts to set the underlying disposable resource will throw an exception.
+ */
+public final class SingleAssignmentDisposable: DisposeBase, Disposable, Cancelable {
 
     fileprivate enum DisposeState: UInt32 {
         case disposed = 1
@@ -45,7 +45,7 @@ public final class SingleAssignmentDisposable : DisposeBase, Disposable, Cancela
         _disposable = disposable
 
         let previousState = AtomicOr(DisposeState.disposableSet.rawValue, &_state)
-        
+
         if (previousState & DisposeStateInt32.disposableSet.rawValue) != 0 {
             rxFatalError("oldState.disposable != nil")
         }
@@ -72,5 +72,4 @@ public final class SingleAssignmentDisposable : DisposeBase, Disposable, Cancela
             _disposable = nil
         }
     }
-
 }

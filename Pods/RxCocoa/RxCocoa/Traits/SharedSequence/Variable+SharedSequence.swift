@@ -14,8 +14,8 @@ extension Variable {
     /// Converts `Variable` to `SharedSequence` unit.
     ///
     /// - returns: Observable sequence.
-    public func asSharedSequence<SharingStrategy: SharingStrategyProtocol>(strategy: SharingStrategy.Type = SharingStrategy.self) -> SharedSequence<SharingStrategy, E> {
-        let source = self.asObservable()
+    public func asSharedSequence<SharingStrategy: SharingStrategyProtocol>(strategy _: SharingStrategy.Type = SharingStrategy.self) -> SharedSequence<SharingStrategy, E> {
+        let source = asObservable()
             .observeOn(SharingStrategy.scheduler)
         return SharedSequence(source)
     }

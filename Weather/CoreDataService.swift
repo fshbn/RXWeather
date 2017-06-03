@@ -10,69 +10,78 @@ import Foundation
 import CoreData
 import UIKit
 import CoreLocation
+import RxCoreData
+#if !RX_NO_MODULE
+    import RxSwift
+    import RxCocoa
+#endif
 
-class CoreDataService: LocalDataProtocol {
-    
+class CoreDataService: CoreDataServiceProtocol {
+
     static let sharedInstance = CoreDataService()
     private init() {}
-    
+
     // MARK: - Core Data stack
-    
+
     lazy var persistentContainer: NSPersistentContainer = {
         let container = NSPersistentContainer(name: "Weather")
-        container.loadPersistentStores(completionHandler: { (storeDescription, error) in
+        container.loadPersistentStores(completionHandler: { _, error in
             if let error = error as NSError? {
                 fatalError("Unresolved error \(error), \(error.userInfo)")
             }
         })
         return container
     }()
-    
-    func getBookmarks(predicate: NSPredicate?, completionHandler: @escaping BookmarksCompletionHandler) {
-        let bookmarkFetch = NSFetchRequest<NSFetchRequestResult>(entityName: "Bookmark")
-        if let predicate = predicate {
-            bookmarkFetch.predicate = predicate
-        }
-        
-        do {
-            let fetchedBookmarks = try persistentContainer.viewContext.fetch(bookmarkFetch) as! [BookmarkModel]
-            completionHandler(fetchedBookmarks, nil)
-        } catch {
-            completionHandler(nil, WeatherError.dataError)
-        }
+
+    var managedObjectContext: NSManagedObjectContext {
+        return persistentContainer.viewContext
     }
-    
-    func saveBookmark(coordinate: CLLocationCoordinate2D, completionHandler: @escaping BookmarksCompletionHandler) {
-        let bookmark = NSEntityDescription.insertNewObject(forEntityName: "Bookmark", into: persistentContainer.viewContext) as! BookmarkModel
+
+    func getBookmarks(predicate: NSPredicate?) -> [Bookmark] {
+        do {
+            guard let bookmarkList = try self.managedObjectContext.searchObjectsForEntity(entityName: Bookmark.className, predicate: predicate, sortArray: nil) as? [Bookmark] else {
+                return [Bookmark]()
+            }
+
+            return bookmarkList
+        } catch {}
+
+        return [Bookmark]()
+    }
+
+    func saveBookmark(coordinate: CLLocationCoordinate2D) -> Bookmark? {
+        guard let bookmark = self.managedObjectContext.insertNewEntity(entityName: Bookmark.className) as? Bookmark else {
+            return nil
+        }
         bookmark.lat = coordinate.latitude
         bookmark.lon = coordinate.longitude
-        
+
         do {
-            try persistentContainer.viewContext.save()
-            completionHandler(nil, nil)
-        } catch {
-            completionHandler(nil, WeatherError.dataError)
-        }
+            try managedObjectContext.save()
+
+            return bookmark
+        } catch {}
+
+        return nil
     }
-    
-    func update(bookmark: BookmarkModel, completionHandler: @escaping BookmarksCompletionHandler) {
+
+    func update() -> Bool {
         do {
-            try persistentContainer.viewContext.save()
-            completionHandler(nil, nil)
-        } catch {
-            completionHandler(nil, WeatherError.dataError)
-        }
+            try managedObjectContext.save()
+
+            return true
+        } catch {}
+
+        return false
     }
-    
-    func delete(bookmark: BookmarkModel, completionHandler: @escaping BookmarksCompletionHandler) {
-        persistentContainer.viewContext.delete(bookmark)
-        
+
+    func delete(managedObject _: NSManagedObject) -> Bool {
         do {
-            try persistentContainer.viewContext.save()
-            completionHandler(nil, nil)
-        } catch {
-            completionHandler(nil, WeatherError.dataError)
-        }
+            try managedObjectContext.save()
+
+            return true
+        } catch {}
+
+        return false
     }
-    
 }

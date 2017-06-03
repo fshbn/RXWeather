@@ -13,5 +13,5 @@ public protocol AssertionHandler {
 ///
 /// @see AssertionHandler
 public var NimbleAssertionHandler: AssertionHandler = { () -> AssertionHandler in
-    return isXCTestAvailable() ? NimbleXCTestHandler() : NimbleXCTestUnavailableHandler()
+    isXCTestAvailable() ? NimbleXCTestHandler() : NimbleXCTestUnavailableHandler()
 }()

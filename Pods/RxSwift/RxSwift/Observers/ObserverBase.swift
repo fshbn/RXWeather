@@ -6,7 +6,7 @@
 //  Copyright © 2015 Krunoslav Zaher. All rights reserved.
 //
 
-class ObserverBase<ElementType> : Disposable, ObserverType {
+class ObserverBase<ElementType>: Disposable, ObserverType {
     typealias E = ElementType
 
     private var _isStopped: AtomicInt = 0
@@ -24,7 +24,7 @@ class ObserverBase<ElementType> : Disposable, ObserverType {
         }
     }
 
-    func onCore(_ event: Event<E>) {
+    func onCore(_: Event<E>) {
         rxAbstractMethod()
     }
 

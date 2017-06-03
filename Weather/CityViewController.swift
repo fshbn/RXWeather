@@ -13,72 +13,116 @@ import UIKit
     import RxCocoa
 #endif
 
-class CityViewController: UIViewController {
-    
-    var viewModel: CityViewModel?
-    let disposeBag = DisposeBag()
-    
+class CityViewController: BaseViewController {
+
+    // MARK: - Intents
+
+    var weather: Weather!
+
+    // MARK: - Outlets
+
     @IBOutlet weak var locationLabel: UILabel!
     @IBOutlet weak var iconLabel: UILabel!
     @IBOutlet weak var temperatureLabel: UILabel!
     @IBOutlet weak var rain3hLabel: UILabel!
     @IBOutlet weak var windSpeedLabel: UILabel!
     @IBOutlet weak var humidityLabel: UILabel!
-    
+    @IBOutlet weak var closeButton: UIButton!
+    @IBOutlet weak var tableView: UITableView!
+
+    override func initDependencies() {
+        super.initDependencies()
+
+        presenter = initPresenter()
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        observeViewController()
+
+        presenter.setWeather(weather: weather)
     }
-    
-    fileprivate func observeViewController() {
-        viewModel?.cityName.asObservable()
-            .subscribe(onNext: {
-                [unowned self] in
-                self.locationLabel.text = $0
-            })
-            .addDisposableTo(disposeBag)
-        
-        viewModel?.icon.asObservable()
-            .subscribe(onNext: {
-                [unowned self] in
-                self.iconLabel.text = $0
-            })
-            .addDisposableTo(disposeBag)
-        
-        viewModel?.temperature.asObservable()
-            .subscribe(onNext: {
-                [unowned self] in
-                self.temperatureLabel.text = $0
-            })
-            .addDisposableTo(disposeBag)
-        
-        viewModel?.precipitationProbability.asObservable()
-            .subscribe(onNext: {
-                [unowned self] in
-                self.rain3hLabel.text = $0
-            })
-            .addDisposableTo(disposeBag)
-        
-        viewModel?.windSpeed.asObservable()
-            .subscribe(onNext: {
-                [unowned self] in
-                self.windSpeedLabel.text = $0
-            })
-            .addDisposableTo(disposeBag)
-        
-        viewModel?.humidity.asObservable()
-            .subscribe(onNext: {
-                [unowned self] in
-                self.humidityLabel.text = $0
-            })
-            .addDisposableTo(disposeBag)
+
+    // MARK: - Observe
+
+    override func bindView() {
+        super.bindView()
+
+        _ = compositeDisposable.insert(presenter.cityName
+            .asObservable()
+            .bind(to: locationLabel.rx.text))
+        _ = compositeDisposable.insert(presenter.icon
+            .asObservable()
+            .bind(to: iconLabel.rx.text))
+        _ = compositeDisposable.insert(presenter.temperature
+            .asObservable()
+            .bind(to: temperatureLabel.rx.text))
+        _ = compositeDisposable.insert(presenter.precipitationProbability
+            .asObservable()
+            .bind(to: rain3hLabel.rx.text))
+        _ = compositeDisposable.insert(presenter.windSpeed
+            .asObservable()
+            .bind(to: windSpeedLabel.rx.text))
+        _ = compositeDisposable
+            .insert(presenter.humidity.asObservable()
+                .bind(to: humidityLabel.rx.text))
+        _ = compositeDisposable.insert(presenter.forecasts
+            .observeOn(MainScheduler.instance)
+            .bind(to: tableView.rx.items(cellIdentifier: CityTableViewCell.identifier, cellType: CityTableViewCell.self)) { (row, element: Forecast, cell) in
+                print(row)
+                cell.nameLabel.text = element.weatherCondition
+                cell.temperatureLabel.text = element.icon
+            }
+        )
     }
-    
-    func closeView() {
-        dismiss(animated: true, completion: nil)
+
+    override func subscribeViewTap() {
+        super.subscribeViewTap()
+
+        _ = compositeDisposable.insert(observeCloseButtonTap())
     }
-    
-    @IBAction func closeButtonTapped(_ sender: Any) {
-        closeView()
+
+    // MARK: - Actions
+
+    func observeCloseButtonTap() -> Disposable {
+        return closeButton.rx.tap
+            .asDriver()
+            .drive(onNext: { _ in
+                self.dismiss(animated: true, completion: nil)
+            })
     }
 }
+
+// MARK: - Extensions
+
+extension CityViewController {
+
+    var presenter: CityPresenter {
+        set {
+            basePresenter = newValue
+        }
+        get {
+            if let presenter = basePresenter as? CityPresenter {
+                return presenter
+            }
+            return initPresenter()
+        }
+    }
+
+    fileprivate func initPresenter() -> CityPresenter {
+        let interactor = CityInteractor(networkService: NetworkService.sharedInstance)
+        return CityPresenter(interactor: interactor)
+    }
+}
+
+// extension CityViewController {
+//
+//    var presenter: CityPresenter {
+//        set {
+//            basePresenter = newValue
+//        }
+//        get {
+//            return basePresenter as! CityPresenter
+//        }
+//    }
+//
+// }

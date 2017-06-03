@@ -23,7 +23,7 @@ struct Weather {
 }
 
 extension Weather {
-    
+
     struct Key {
         static let cityId = "id"
         static let cityName = "name"
@@ -31,68 +31,65 @@ extension Weather {
         static let mainKey = "main"
         static let temperature = "temp"
         static let humidity = "humidity"
-        
+
         // rain
         static let rainKey = "rain"
         static let precipitation = "3h"
-        
+
         // wind
         static let windKey = "wind"
         static let windSpeed = "speed"
         static let windDeg = "deg"
-        
+
         // weather[0]
         static let weatherKey = "weather"
         static let icon = "icon"
         static let weatherCondition = "main"
-        
     }
-    
+
     init?(json: [String: Any]) {
         if let cityId = json["id"] as? Int16 {
             self.cityId = cityId
         }
-        
+
         if let cityNameString = json[Key.cityName] as? String {
-            self.cityName = cityNameString
+            cityName = cityNameString
         }
-        
-        if let main = json[Key.mainKey] as? Dictionary<String, AnyObject> {
+
+        if let main = json[Key.mainKey] as? [String: AnyObject] {
             if let temperatureValue = main[Key.temperature] as? Double {
-                self.temperature = temperatureValue
+                temperature = temperatureValue
             }
-            
+
             if let humidityValue = main[Key.humidity] as? Double {
-                self.humidity = humidityValue
+                humidity = humidityValue
             }
         }
-        
-        if let rain = json[Key.rainKey] as? Dictionary<String, AnyObject> {
+
+        if let rain = json[Key.rainKey] as? [String: AnyObject] {
             if let precipitationValue = rain[Key.precipitation] as? Double {
-                self.precipitationProbability = precipitationValue
+                precipitationProbability = precipitationValue
             }
         }
-        
-        if let wind = json[Key.windKey] as? Dictionary<String, AnyObject> {
+
+        if let wind = json[Key.windKey] as? [String: AnyObject] {
             if let windSpeedValue = wind[Key.windSpeed] as? Double {
-                self.windSpeed = windSpeedValue
+                windSpeed = windSpeedValue
             }
-            
+
             if let windDegValue = wind[Key.windDeg] as? Double {
-                self.windDeg = windDegValue
+                windDeg = windDegValue
             }
         }
-        
-        if let weather = json[Key.weatherKey] as? [Dictionary<String, AnyObject>] {
+
+        if let weather = json[Key.weatherKey] as? [[String: AnyObject]] {
             if let weatherConditionValue = weather[0][Key.weatherCondition] as? String {
-                self.weatherCondition = weatherConditionValue
+                weatherCondition = weatherConditionValue
             }
-            
+
             if let icon = weather[0]["icon"] as? String, let iconId = weather[0]["id"] as? Int {
                 self.icon = WeatherIcon(condition: iconId, iconString: icon).iconText
             }
         }
     }
-    
 }
-

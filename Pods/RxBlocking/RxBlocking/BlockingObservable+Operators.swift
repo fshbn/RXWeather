@@ -35,9 +35,9 @@ extension BlockingObservable {
                     return
                 }
                 switch e {
-                case .next(let element):
+                case let .next(element):
                     elements.append(element)
-                case .error(let e):
+                case let .error(e):
                     error = e
                     d.dispose()
                     lock.stop()
@@ -76,7 +76,7 @@ extension BlockingObservable {
         defer {
             d.dispose()
         }
-        
+
         let lock = RunLoopLock(timeout: timeout)
 
         lock.dispatch {
@@ -86,12 +86,12 @@ extension BlockingObservable {
                 }
 
                 switch e {
-                case .next(let e):
+                case let .next(e):
                     if element == nil {
                         element = e
                     }
                     break
-                case .error(let e):
+                case let .error(e):
                     error = e
                 default:
                     break
@@ -130,7 +130,7 @@ extension BlockingObservable {
         defer {
             d.dispose()
         }
-        
+
         let lock = RunLoopLock(timeout: timeout)
 
         lock.dispatch {
@@ -139,10 +139,10 @@ extension BlockingObservable {
                     return
                 }
                 switch e {
-                case .next(let e):
+                case let .next(e):
                     element = e
                     return
-                case .error(let e):
+                case let .error(e):
                     error = e
                 default:
                     break
@@ -154,13 +154,13 @@ extension BlockingObservable {
 
             d.setDisposable(subscription)
         }
-        
+
         try lock.run()
-        
+
         if let error = error {
             throw error
         }
-        
+
         return element
     }
 }
@@ -183,24 +183,24 @@ extension BlockingObservable {
     /// - returns: Returns the only element of an sequence that satisfies the condition in the predicate, and reports an error if there is not exactly one element in the sequence.
     public func single(_ predicate: @escaping (E) throws -> Bool) throws -> E? {
         var element: E?
-        
+
         var error: Swift.Error?
-        
+
         let d = SingleAssignmentDisposable()
 
         defer {
             d.dispose()
         }
-        
+
         let lock = RunLoopLock(timeout: timeout)
-        
+
         lock.dispatch {
             let subscription = self.source.subscribe { e in
                 if d.isDisposed {
                     return
                 }
                 switch e {
-                case .next(let e):
+                case let .next(e):
                     do {
                         if try !predicate(e) {
                             return
@@ -210,13 +210,13 @@ extension BlockingObservable {
                         } else {
                             throw RxError.moreThanOneElement
                         }
-                    } catch (let err) {
+                    } catch let (err) {
                         error = err
                         d.dispose()
                         lock.stop()
                     }
                     return
-                case .error(let e):
+                case let .error(e):
                     error = e
                 case .completed:
                     if element == nil {
@@ -230,13 +230,13 @@ extension BlockingObservable {
 
             d.setDisposable(subscription)
         }
-        
+
         try lock.run()
 
         if let error = error {
             throw error
         }
-        
+
         return element
     }
 }
