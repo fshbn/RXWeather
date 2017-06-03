@@ -13,23 +13,23 @@ public class TestableObservable<Element>
     : ObservableType {
     public typealias E = Element
     /// Subscriptions recorded during observable lifetime.
-    public internal(set) var subscriptions: [Subscription]
+    internal(set) public var subscriptions: [Subscription]
 
     /// List of events to replay for all subscribers.
     ///
     /// Event times represent absolute `TestScheduler` time.
-    public internal(set) var recordedEvents: [Recorded<Event<Element>>]
-    
+    internal(set) public var recordedEvents: [Recorded<Event<Element>>]
+
     /// Parent test scheduler.
     internal let testScheduler: TestScheduler
 
     init(testScheduler: TestScheduler, recordedEvents: [Recorded<Event<Element>>]) {
         self.testScheduler = testScheduler
         self.recordedEvents = recordedEvents
-        self.subscriptions = []
+        subscriptions = []
     }
 
-    public func subscribe<O : ObserverType>(_ observer: O) -> Disposable where O.E == Element {
+    public func subscribe<O: ObserverType>(_: O) -> Disposable where O.E == Element {
         fatalError("Abstract method")
     }
 }

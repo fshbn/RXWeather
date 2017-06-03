@@ -16,18 +16,18 @@ import class Foundation.NSError
 public func == <Element: Equatable>(lhs: Event<Element>, rhs: Event<Element>) -> Bool {
     switch (lhs, rhs) {
     case (.completed, .completed): return true
-    case (.error(let e1), .error(let e2)):
+    case let (.error(e1), .error(e2)):
         #if os(Linux)
-          return  "\(e1)" == "\(e2)"
+            return "\(e1)" == "\(e2)"
         #else
-          let error1 = e1 as NSError
-          let error2 = e2 as NSError
+            let error1 = e1 as NSError
+            let error2 = e2 as NSError
 
-          return error1.domain == error2.domain
-              && error1.code == error2.code
-              && "\(e1)" == "\(e2)"
+            return error1.domain == error2.domain
+                && error1.code == error2.code
+                && "\(e1)" == "\(e2)"
         #endif
-    case (.next(let v1), .next(let v2)): return v1 == v2
+    case let (.next(v1), .next(v2)): return v1 == v2
     default: return false
     }
 }
@@ -38,9 +38,9 @@ public func == <Element: Equatable>(lhs: Event<Element>, rhs: Event<Element>) ->
 /// and their string representations are equal.
 public func == <Element: Equatable>(lhs: SingleEvent<Element>, rhs: SingleEvent<Element>) -> Bool {
     switch (lhs, rhs) {
-    case (.error(let e1), .error(let e2)):
+    case let (.error(e1), .error(e2)):
         #if os(Linux)
-            return  "\(e1)" == "\(e2)"
+            return "\(e1)" == "\(e2)"
         #else
             let error1 = e1 as NSError
             let error2 = e2 as NSError
@@ -49,7 +49,7 @@ public func == <Element: Equatable>(lhs: SingleEvent<Element>, rhs: SingleEvent<
                 && error1.code == error2.code
                 && "\(e1)" == "\(e2)"
         #endif
-    case (.success(let v1), .success(let v2)): return v1 == v2
+    case let (.success(v1), .success(v2)): return v1 == v2
     default: return false
     }
 }
@@ -61,9 +61,9 @@ public func == <Element: Equatable>(lhs: SingleEvent<Element>, rhs: SingleEvent<
 public func == <Element: Equatable>(lhs: MaybeEvent<Element>, rhs: MaybeEvent<Element>) -> Bool {
     switch (lhs, rhs) {
     case (.completed, .completed): return true
-    case (.error(let e1), .error(let e2)):
+    case let (.error(e1), .error(e2)):
         #if os(Linux)
-            return  "\(e1)" == "\(e2)"
+            return "\(e1)" == "\(e2)"
         #else
             let error1 = e1 as NSError
             let error2 = e2 as NSError
@@ -72,7 +72,7 @@ public func == <Element: Equatable>(lhs: MaybeEvent<Element>, rhs: MaybeEvent<El
                 && error1.code == error2.code
                 && "\(e1)" == "\(e2)"
         #endif
-    case (.success(let v1), .success(let v2)): return v1 == v2
+    case let (.success(v1), .success(v2)): return v1 == v2
     default: return false
     }
 }
@@ -84,9 +84,9 @@ public func == <Element: Equatable>(lhs: MaybeEvent<Element>, rhs: MaybeEvent<El
 public func == (lhs: CompletableEvent, rhs: CompletableEvent) -> Bool {
     switch (lhs, rhs) {
     case (.completed, .completed): return true
-    case (.error(let e1), .error(let e2)):
+    case let (.error(e1), .error(e2)):
         #if os(Linux)
-            return  "\(e1)" == "\(e2)"
+            return "\(e1)" == "\(e2)"
         #else
             let error1 = e1 as NSError
             let error2 = e2 as NSError

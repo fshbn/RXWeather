@@ -7,10 +7,10 @@
 //
 
 #if os(iOS)
-    
-#if !RX_NO_MODULE
-    import RxSwift
-#endif
+
+    #if !RX_NO_MODULE
+        import RxSwift
+    #endif
     import UIKit
 
     extension UISearchController {
@@ -21,7 +21,7 @@
             return RxSearchControllerDelegateProxy(parentObject: self)
         }
     }
-    
+
     @available(iOS 8.0, *)
     extension Reactive where Base: UISearchController {
         /// Reactive wrapper for `delegate`.
@@ -33,38 +33,37 @@
         /// Reactive wrapper for `delegate` message.
         public var didDismiss: Observable<Void> {
             return delegate
-                .methodInvoked( #selector(UISearchControllerDelegate.didDismissSearchController(_:)))
-                .map {_ in}
+                .methodInvoked(#selector(UISearchControllerDelegate.didDismissSearchController(_:)))
+                .map { _ in }
         }
 
         /// Reactive wrapper for `delegate` message.
         public var didPresent: Observable<Void> {
             return delegate
                 .methodInvoked(#selector(UISearchControllerDelegate.didPresentSearchController(_:)))
-                .map {_ in}
+                .map { _ in }
         }
 
         /// Reactive wrapper for `delegate` message.
         public var present: Observable<Void> {
             return delegate
-                .methodInvoked( #selector(UISearchControllerDelegate.presentSearchController(_:)))
-                .map {_ in}
+                .methodInvoked(#selector(UISearchControllerDelegate.presentSearchController(_:)))
+                .map { _ in }
         }
 
         /// Reactive wrapper for `delegate` message.
         public var willDismiss: Observable<Void> {
             return delegate
                 .methodInvoked(#selector(UISearchControllerDelegate.willDismissSearchController(_:)))
-                .map {_ in}
+                .map { _ in }
         }
-        
+
         /// Reactive wrapper for `delegate` message.
         public var willPresent: Observable<Void> {
             return delegate
-                .methodInvoked( #selector(UISearchControllerDelegate.willPresentSearchController(_:)))
-                .map {_ in}
+                .methodInvoked(#selector(UISearchControllerDelegate.willPresentSearchController(_:)))
+                .map { _ in }
         }
-        
     }
-    
+
 #endif

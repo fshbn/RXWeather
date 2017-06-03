@@ -10,125 +10,125 @@ import Foundation
 
 struct WeatherIcon {
     let iconText: String
-    
+
     enum IconType: String, CustomStringConvertible {
-        case day200 = "day200"
-        case day201 = "day201"
-        case day202 = "day202"
-        case day210 = "day210"
-        case day211 = "day211"
-        case day212 = "day212"
-        case day221 = "day221"
-        case day230 = "day230"
-        case day231 = "day231"
-        case day232 = "day232"
-        case day300 = "day300"
-        case day301 = "day301"
-        case day302 = "day302"
-        case day310 = "day310"
-        case day311 = "day311"
-        case day312 = "day312"
-        case day313 = "day313"
-        case day314 = "day314"
-        case day321 = "day321"
-        case day500 = "day500"
-        case day501 = "day501"
-        case day502 = "day502"
-        case day503 = "day503"
-        case day504 = "day504"
-        case day511 = "day511"
-        case day520 = "day520"
-        case day521 = "day521"
-        case day522 = "day522"
-        case day531 = "day531"
-        case day600 = "day600"
-        case day601 = "day601"
-        case day602 = "day602"
-        case day611 = "day611"
-        case day612 = "day612"
-        case day615 = "day615"
-        case day616 = "day616"
-        case day620 = "day620"
-        case day621 = "day621"
-        case day622 = "day622"
-        case day701 = "day701"
-        case day711 = "day711"
-        case day721 = "day721"
-        case day731 = "day731"
-        case day741 = "day741"
-        case day761 = "day761"
-        case day762 = "day762"
-        case day781 = "day781"
-        case day800 = "day800"
-        case day801 = "day801"
-        case day802 = "day802"
-        case day803 = "day803"
-        case day804 = "day804"
-        case day900 = "day900"
-        case day902 = "day902"
-        case day903 = "day903"
-        case day904 = "day904"
-        case day906 = "day906"
-        case day957 = "day957"
-        case night200 = "night200"
-        case night201 = "night201"
-        case night202 = "night202"
-        case night210 = "night210"
-        case night211 = "night211"
-        case night212 = "night212"
-        case night221 = "night221"
-        case night230 = "night230"
-        case night231 = "night231"
-        case night232 = "night232"
-        case night300 = "night300"
-        case night301 = "night301"
-        case night302 = "night302"
-        case night310 = "night310"
-        case night311 = "night311"
-        case night312 = "night312"
-        case night313 = "night313"
-        case night314 = "night314"
-        case night321 = "night321"
-        case night500 = "night500"
-        case night501 = "night501"
-        case night502 = "night502"
-        case night503 = "night503"
-        case night504 = "night504"
-        case night511 = "night511"
-        case night520 = "night520"
-        case night521 = "night521"
-        case night522 = "night522"
-        case night531 = "night531"
-        case night600 = "night600"
-        case night601 = "night601"
-        case night602 = "night602"
-        case night611 = "night611"
-        case night612 = "night612"
-        case night615 = "night615"
-        case night616 = "night616"
-        case night620 = "night620"
-        case night621 = "night621"
-        case night622 = "night622"
-        case night701 = "night701"
-        case night711 = "night711"
-        case night721 = "night721"
-        case night731 = "night731"
-        case night741 = "night741"
-        case night761 = "night761"
-        case night762 = "night762"
-        case night781 = "night781"
-        case night800 = "night800"
-        case night801 = "night801"
-        case night802 = "night802"
-        case night803 = "night803"
-        case night804 = "night804"
-        case night900 = "night900"
-        case night902 = "night902"
-        case night903 = "night903"
-        case night904 = "night904"
-        case night906 = "night906"
-        case night957 = "night957"
-        
+        case day200
+        case day201
+        case day202
+        case day210
+        case day211
+        case day212
+        case day221
+        case day230
+        case day231
+        case day232
+        case day300
+        case day301
+        case day302
+        case day310
+        case day311
+        case day312
+        case day313
+        case day314
+        case day321
+        case day500
+        case day501
+        case day502
+        case day503
+        case day504
+        case day511
+        case day520
+        case day521
+        case day522
+        case day531
+        case day600
+        case day601
+        case day602
+        case day611
+        case day612
+        case day615
+        case day616
+        case day620
+        case day621
+        case day622
+        case day701
+        case day711
+        case day721
+        case day731
+        case day741
+        case day761
+        case day762
+        case day781
+        case day800
+        case day801
+        case day802
+        case day803
+        case day804
+        case day900
+        case day902
+        case day903
+        case day904
+        case day906
+        case day957
+        case night200
+        case night201
+        case night202
+        case night210
+        case night211
+        case night212
+        case night221
+        case night230
+        case night231
+        case night232
+        case night300
+        case night301
+        case night302
+        case night310
+        case night311
+        case night312
+        case night313
+        case night314
+        case night321
+        case night500
+        case night501
+        case night502
+        case night503
+        case night504
+        case night511
+        case night520
+        case night521
+        case night522
+        case night531
+        case night600
+        case night601
+        case night602
+        case night611
+        case night612
+        case night615
+        case night616
+        case night620
+        case night621
+        case night622
+        case night701
+        case night711
+        case night721
+        case night731
+        case night741
+        case night761
+        case night762
+        case night781
+        case night800
+        case night801
+        case night802
+        case night803
+        case night804
+        case night900
+        case night902
+        case night903
+        case night904
+        case night906
+        case night957
+
         var description: String {
             switch self {
             case .day200: return "\u{f010}"
@@ -250,10 +250,10 @@ struct WeatherIcon {
             }
         }
     }
-    
+
     init(condition: Int, iconString: String) {
         var rawValue: String
-        
+
         // if iconString has 'n', it means night time.
         if iconString.range(of: "n") != nil {
             rawValue = "night" + String(condition)
@@ -261,7 +261,7 @@ struct WeatherIcon {
             // day time
             rawValue = "day" + String(condition)
         }
-        
+
         guard let iconType = IconType(rawValue: rawValue) else {
             iconText = ""
             return

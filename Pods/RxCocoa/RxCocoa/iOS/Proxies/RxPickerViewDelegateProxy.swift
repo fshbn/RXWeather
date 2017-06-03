@@ -8,9 +8,9 @@
 
 #if os(iOS)
 
-#if !RX_NO_MODULE
-    import RxSwift
-#endif
+    #if !RX_NO_MODULE
+        import RxSwift
+    #endif
     import UIKit
 
     public class RxPickerViewDelegateProxy
@@ -23,13 +23,13 @@
             let pickerView: UIPickerView = castOrFatalError(object)
             return pickerView.createRxDelegateProxy()
         }
-        
+
         /// For more information take a look at `DelegateProxyType`.
         public class func setCurrentDelegate(_ delegate: AnyObject?, toObject object: AnyObject) {
             let pickerView: UIPickerView = castOrFatalError(object)
             pickerView.delegate = castOptionalOrFatalError(delegate)
         }
-        
+
         /// For more information take a look at `DelegateProxyType`.
         public class func currentDelegateFor(_ object: AnyObject) -> AnyObject? {
             let pickerView: UIPickerView = castOrFatalError(object)

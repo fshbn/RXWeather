@@ -1,30 +1,58 @@
 PODS:
+  - Alamofire (4.4.0)
   - Nimble (6.1.0)
   - Quick (1.1.0)
+  - Reusable (4.0.0):
+    - Reusable/Storyboard (= 4.0.0)
+    - Reusable/View (= 4.0.0)
+  - Reusable/Storyboard (4.0.0)
+  - Reusable/View (4.0.0)
+  - RxAlamofire (3.0.2):
+    - RxAlamofire/Core (= 3.0.2)
+  - RxAlamofire/Core (3.0.2):
+    - Alamofire (~> 4.0)
+    - RxSwift (~> 3.0)
   - RxBlocking (3.4.0):
     - RxSwift (~> 3.4)
   - RxCocoa (3.4.0):
     - RxSwift (~> 3.4)
+  - RxCoreData (0.3.1):
+    - RxCocoa (~> 3.0)
+    - RxSwift (~> 3.0)
   - RxSwift (3.4.0)
   - RxTest (3.4.0):
     - RxSwift (~> 3.4)
+  - SwiftFormat/CLI (0.28.5)
+  - SwiftLint (0.18.1)
 
 DEPENDENCIES:
+  - Alamofire (~> 4.0)
   - Nimble
   - Quick
+  - Reusable
+  - RxAlamofire
   - RxBlocking (~> 3.0)
   - RxCocoa (~> 3.0)
+  - RxCoreData (~> 0.3.1)
   - RxSwift (~> 3.0)
   - RxTest (~> 3.0)
+  - SwiftFormat/CLI
+  - SwiftLint
 
 SPEC CHECKSUMS:
+  Alamofire: dc44b1600b800eb63da6a19039a0083d62a6a62d
   Nimble: c53e6903fee94041b90ded74f135820437d8bf59
   Quick: dafc587e21eed9f4cab3249b9f9015b0b7a7f71d
+  Reusable: 98e5fff1e0e2e00872199699b276dde08ee56c07
+  RxAlamofire: bc53604b29fd2d220cfaa490c736cc4500819f34
   RxBlocking: 1797b8c1a3ad7b08965145e6e2294c2e101515aa
   RxCocoa: d14ef6b6029e1ddc6e966508c09289090de68ff9
+  RxCoreData: e8fbeaee6eab8b900a22ff4a677f099987adb429
   RxSwift: 3789a1af753002a14edecdb698a2424624296a9c
   RxTest: beb6beb882cf1dcac5fc9fdbd4760a5254e7f3a6
+  SwiftFormat: 6b53fc812b70ec05dee6b8d4d4b65ac0b90f0ee2
+  SwiftLint: b467d08f5b25dc3b3cfed243d8e1b74b91714c67
 
-PODFILE CHECKSUM: 847e2d1180eeafa5297220d55a90741723e19399
+PODFILE CHECKSUM: 46630e4aa57e5a78d1da84eff7e40cf0c90560ff
 
-COCOAPODS: 1.0.1
+COCOAPODS: 1.2.1

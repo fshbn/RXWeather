@@ -6,7 +6,7 @@
 //  Copyright © 2015 Krunoslav Zaher. All rights reserved.
 //
 
-protocol CombineLatestProtocol : class {
+protocol CombineLatestProtocol: class {
     func next(_ index: Int)
     func fail(_ error: Swift.Error)
     func done(_ index: Int)
@@ -16,7 +16,7 @@ class CombineLatestSink<O: ObserverType>
     : Sink<O>
     , CombineLatestProtocol {
     typealias Element = O.E
-   
+
     let _lock = RecursiveLock()
 
     private let _arity: Int
@@ -24,19 +24,19 @@ class CombineLatestSink<O: ObserverType>
     private var _numberOfDone = 0
     private var _hasValue: [Bool]
     private var _isDone: [Bool]
-   
+
     init(arity: Int, observer: O, cancel: Cancelable) {
         _arity = arity
         _hasValue = [Bool](repeating: false, count: arity)
         _isDone = [Bool](repeating: false, count: arity)
-        
+
         super.init(observer: observer, cancel: cancel)
     }
-    
+
     func getResult() throws -> Element {
         rxAbstractMethod()
     }
-    
+
     func next(_ index: Int) {
         if !_hasValue[index] {
             _hasValue[index] = true
@@ -47,13 +47,11 @@ class CombineLatestSink<O: ObserverType>
             do {
                 let result = try getResult()
                 forwardOn(.next(result))
-            }
-            catch let e {
+            } catch let e {
                 forwardOn(.error(e))
                 dispose()
             }
-        }
-        else {
+        } else {
             var allOthersDone = true
 
             for i in 0 ..< _arity {
@@ -62,19 +60,19 @@ class CombineLatestSink<O: ObserverType>
                     break
                 }
             }
-            
+
             if allOthersDone {
                 forwardOn(.completed)
                 dispose()
             }
         }
     }
-    
+
     func fail(_ error: Swift.Error) {
         forwardOn(.error(error))
         dispose()
     }
-    
+
     func done(_ index: Int) {
         if _isDone[index] {
             return
@@ -96,14 +94,14 @@ final class CombineLatestObserver<ElementType>
     , SynchronizedOnType {
     typealias Element = ElementType
     typealias ValueSetter = (Element) -> Void
-    
+
     private let _parent: CombineLatestProtocol
-    
+
     let _lock: RecursiveLock
     private let _index: Int
     private let _this: Disposable
     private let _setLatestValue: ValueSetter
-    
+
     init(lock: RecursiveLock, parent: CombineLatestProtocol, index: Int, setLatestValue: @escaping ValueSetter, this: Disposable) {
         _lock = lock
         _parent = parent
@@ -111,17 +109,17 @@ final class CombineLatestObserver<ElementType>
         _this = this
         _setLatestValue = setLatestValue
     }
-    
+
     func on(_ event: Event<Element>) {
         synchronizedOn(event)
     }
 
     func _synchronized_on(_ event: Event<Element>) {
         switch event {
-        case .next(let value):
+        case let .next(value):
             _setLatestValue(value)
             _parent.next(_index)
-        case .error(let error):
+        case let .error(error):
             _this.dispose()
             _parent.fail(error)
         case .completed:

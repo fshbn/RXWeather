@@ -2,7 +2,7 @@ import Foundation
 
 /// A Nimble matcher that succeeds when the actual value is an _exact_ instance of the given class.
 public func beAnInstanceOf<T>(_ expectedType: T.Type) -> NonNilMatcherFunc<Any> {
-    return NonNilMatcherFunc {actualExpression, failureMessage in
+    return NonNilMatcherFunc { actualExpression, failureMessage in
         failureMessage.postfixMessage = "be an instance of \(String(describing: expectedType))"
         let instance = try actualExpression.evaluate()
         guard let validInstance = instance else {
@@ -31,20 +31,20 @@ public func beAnInstanceOf(_ expectedClass: AnyClass) -> NonNilMatcherFunc<NSObj
             failureMessage.actualValue = "<nil>"
         }
         failureMessage.postfixMessage = "be an instance of \(String(describing: expectedClass))"
-#if _runtime(_ObjC)
-        return instance != nil && instance!.isMember(of: expectedClass)
-#else
-        return instance != nil && type(of: instance!) == expectedClass
-#endif
+        #if _runtime(_ObjC)
+            return instance != nil && instance!.isMember(of: expectedClass)
+        #else
+            return instance != nil && type(of: instance!) == expectedClass
+        #endif
     }
 }
 
 #if _runtime(_ObjC)
-extension NMBObjCMatcher {
-    public class func beAnInstanceOfMatcher(_ expected: AnyClass) -> NMBMatcher {
-        return NMBObjCMatcher(canMatchNil: false) { actualExpression, failureMessage in
-            return try! beAnInstanceOf(expected).matches(actualExpression, failureMessage: failureMessage)
+    extension NMBObjCMatcher {
+        public class func beAnInstanceOfMatcher(_ expected: AnyClass) -> NMBMatcher {
+            return NMBObjCMatcher(canMatchNil: false) { actualExpression, failureMessage in
+                try! beAnInstanceOf(expected).matches(actualExpression, failureMessage: failureMessage)
+            }
         }
     }
-}
 #endif

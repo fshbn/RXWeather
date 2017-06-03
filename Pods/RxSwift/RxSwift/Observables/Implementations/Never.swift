@@ -6,8 +6,8 @@
 //  Copyright © 2015 Krunoslav Zaher. All rights reserved.
 //
 
-final class NeverProducer<Element> : Producer<Element> {
-    override func subscribe<O : ObserverType>(_ observer: O) -> Disposable where O.E == Element {
+final class NeverProducer<Element>: Producer<Element> {
+    override func subscribe<O: ObserverType>(_: O) -> Disposable where O.E == Element {
         return Disposables.create()
     }
 }

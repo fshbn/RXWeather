@@ -15,7 +15,7 @@ extension Variable {
     ///
     /// - returns: Driving observable sequence.
     public func asDriver() -> Driver<E> {
-        let source = self.asObservable()
+        let source = asObservable()
             .observeOn(DriverSharingStrategy.scheduler)
         return Driver(source)
     }

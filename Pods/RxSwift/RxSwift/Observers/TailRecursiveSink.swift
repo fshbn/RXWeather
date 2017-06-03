@@ -61,26 +61,26 @@ class TailRecursiveSink<S: Sequence, O: ObserverType>
         dispose()
     }
 
-    func extract(_ observable: Observable<E>) -> SequenceGenerator? {
+    func extract(_: Observable<E>) -> SequenceGenerator? {
         rxAbstractMethod()
     }
 
     // should be done on gate locked
 
     private func moveNextCommand() {
-        var next: Observable<E>? = nil
+        var next: Observable<E>?
 
         repeat {
             guard let (g, left) = _generators.last else {
                 break
             }
-            
+
             if _isDisposed {
                 return
             }
 
             _generators.removeLast()
-            
+
             var e = g
 
             guard let nextCandidate = e.next()?.asObservable() else {
@@ -100,8 +100,7 @@ class TailRecursiveSink<S: Sequence, O: ObserverType>
                 if knownOriginalLeft - 1 >= 1 {
                     _generators.append((e, knownOriginalLeft - 1))
                 }
-            }
-            else {
+            } else {
                 _generators.append((e, nil))
             }
 
@@ -114,13 +113,12 @@ class TailRecursiveSink<S: Sequence, O: ObserverType>
                         maxTailRecursiveSinkStackSize = _generators.count
                     }
                 #endif
-            }
-            else {
+            } else {
                 next = nextCandidate
             }
         } while next == nil
 
-        guard let existingNext = next else  {
+        guard let existingNext = next else {
             done()
             return
         }
@@ -130,7 +128,7 @@ class TailRecursiveSink<S: Sequence, O: ObserverType>
         disposable.setDisposable(subscribeToNext(existingNext))
     }
 
-    func subscribeToNext(_ source: Observable<E>) -> Disposable {
+    func subscribeToNext(_: Observable<E>) -> Disposable {
         rxAbstractMethod()
     }
 
@@ -141,10 +139,9 @@ class TailRecursiveSink<S: Sequence, O: ObserverType>
 
     override func dispose() {
         super.dispose()
-        
+
         _subscription.dispose()
-        
+
         schedule(.dispose)
     }
 }
-

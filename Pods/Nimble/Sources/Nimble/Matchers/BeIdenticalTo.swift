@@ -22,6 +22,7 @@ public func beIdenticalTo(_ expected: Any?) -> NonNilMatcherFunc<Any> {
 public func === (lhs: Expectation<Any>, rhs: Any?) {
     lhs.to(beIdenticalTo(rhs))
 }
+
 public func !== (lhs: Expectation<Any>, rhs: Any?) {
     lhs.toNot(beIdenticalTo(rhs))
 }
@@ -35,12 +36,12 @@ public func be(_ expected: Any?) -> NonNilMatcherFunc<Any> {
 }
 
 #if _runtime(_ObjC)
-extension NMBObjCMatcher {
-    public class func beIdenticalToMatcher(_ expected: NSObject?) -> NMBObjCMatcher {
-        return NMBObjCMatcher(canMatchNil: false) { actualExpression, failureMessage in
-            let aExpr = actualExpression.cast { $0 as Any? }
-            return try! beIdenticalTo(expected).matches(aExpr, failureMessage: failureMessage)
+    extension NMBObjCMatcher {
+        public class func beIdenticalToMatcher(_ expected: NSObject?) -> NMBObjCMatcher {
+            return NMBObjCMatcher(canMatchNil: false) { actualExpression, failureMessage in
+                let aExpr = actualExpression.cast { $0 as Any? }
+                return try! beIdenticalTo(expected).matches(aExpr, failureMessage: failureMessage)
+            }
         }
     }
-}
 #endif

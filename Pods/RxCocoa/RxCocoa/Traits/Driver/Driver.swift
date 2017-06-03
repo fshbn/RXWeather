@@ -10,7 +10,6 @@
     import RxSwift
 #endif
 
-
 /**
  Trait that represents observable sequence with following properties:
 
@@ -46,7 +45,7 @@ public struct DriverSharingStrategy: SharingStrategyProtocol {
 extension SharedSequenceConvertibleType where SharingStrategy == DriverSharingStrategy {
     /// Adds `asDriver` to `SharingSequence` with `DriverSharingStrategy`.
     public func asDriver() -> Driver<E> {
-        return self.asSharedSequence()
+        return asSharedSequence()
     }
 }
 
@@ -55,8 +54,8 @@ extension SharedSequenceConvertibleType where SharingStrategy == DriverSharingSt
  main schedulers.
 
  **This shouldn't be used in normal release builds.**
-*/
-public func driveOnScheduler(_ scheduler: SchedulerType, action: () -> ()) {
+ */
+public func driveOnScheduler(_ scheduler: SchedulerType, action: () -> Void) {
     let originalObserveOnScheduler = driverObserveOnScheduler
     driverObserveOnScheduler = scheduler
 
@@ -77,11 +76,11 @@ public func driveOnScheduler(_ scheduler: SchedulerType, action: () -> ()) {
 
 func _forceCompilerToStopDoingInsaneOptimizationsThatBreakCode(_ scheduler: SchedulerType) {
     let a: Int32 = 1
-#if os(Linux)
-    let b = 314 + Int32(Glibc.random() & 1)
-#else
-    let b = 314 + Int32(arc4random() & 1)
-#endif
+    #if os(Linux)
+        let b = 314 + Int32(Glibc.random() & 1)
+    #else
+        let b = 314 + Int32(arc4random() & 1)
+    #endif
     if a == b {
         print(scheduler)
     }

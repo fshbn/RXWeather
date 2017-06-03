@@ -7,42 +7,42 @@
 //
 
 #if !RX_NO_MODULE
-import RxSwift
+    import RxSwift
 #endif
 
 /// Protocol that enables extension of `ControlProperty`.
-public protocol ControlPropertyType : ObservableType, ObserverType {
+public protocol ControlPropertyType: ObservableType, ObserverType {
 
     /// - returns: `ControlProperty` interface
     func asControlProperty() -> ControlProperty<E>
 }
 
 /**
-    Trait for `Observable`/`ObservableType` that represents property of UI element.
- 
-    Sequence of values only represents initial control value and user initiated value changes.
-    Programatic value changes won't be reported.
+ Trait for `Observable`/`ObservableType` that represents property of UI element.
 
-    It's properties are:
+ Sequence of values only represents initial control value and user initiated value changes.
+ Programatic value changes won't be reported.
 
-    - it never fails
-    - `shareReplay(1)` behavior
-        - it's stateful, upon subscription (calling subscribe) last element is immediately replayed if it was produced
-    - it will `Complete` sequence on control being deallocated
-    - it never errors out
-    - it delivers events on `MainScheduler.instance`
+ It's properties are:
 
-    **The implementation of `ControlProperty` will ensure that sequence of values is being subscribed on main scheduler
-    (`subscribeOn(ConcurrentMainScheduler.instance)` behavior).**
+ - it never fails
+ - `shareReplay(1)` behavior
+ - it's stateful, upon subscription (calling subscribe) last element is immediately replayed if it was produced
+ - it will `Complete` sequence on control being deallocated
+ - it never errors out
+ - it delivers events on `MainScheduler.instance`
 
-    **It is implementor's responsibility to make sure that that all other properties enumerated above are satisfied.**
+ **The implementation of `ControlProperty` will ensure that sequence of values is being subscribed on main scheduler
+ (`subscribeOn(ConcurrentMainScheduler.instance)` behavior).**
 
-    **If they aren't, then using this trait communicates wrong properties and could potentially break someone's code.**
+ **It is implementor's responsibility to make sure that that all other properties enumerated above are satisfied.**
 
-    **In case `values` observable sequence that is being passed into initializer doesn't satisfy all enumerated
-    properties, please don't use this unit.**
-*/
-public struct ControlProperty<PropertyType> : ControlPropertyType {
+ **If they aren't, then using this trait communicates wrong properties and could potentially break someone's code.**
+
+ **In case `values` observable sequence that is being passed into initializer doesn't satisfy all enumerated
+ properties, please don't use this unit.**
+ */
+public struct ControlProperty<PropertyType>: ControlPropertyType {
     public typealias E = PropertyType
 
     let _values: Observable<PropertyType>
@@ -64,7 +64,7 @@ public struct ControlProperty<PropertyType> : ControlPropertyType {
     ///
     /// - parameter observer: Observer to subscribe to property values.
     /// - returns: Disposable object that can be used to unsubscribe the observer from receiving control property values.
-    public func subscribe<O : ObserverType>(_ observer: O) -> Disposable where O.E == E {
+    public func subscribe<O: ObserverType>(_ observer: O) -> Disposable where O.E == E {
         return _values.subscribe(observer)
     }
 
@@ -79,9 +79,7 @@ public struct ControlProperty<PropertyType> : ControlPropertyType {
     /// adjacent sequence values need to be different (e.g. because of interaction between programatic and user updates,
     /// or for any other reason).
     public var changed: ControlEvent<PropertyType> {
-        get {
-            return ControlEvent(events: _values.skip(1))
-        }
+        return ControlEvent(events: _values.skip(1))
     }
 
     /// - returns: `Observable` interface.
@@ -101,7 +99,7 @@ public struct ControlProperty<PropertyType> : ControlPropertyType {
     /// - In case sequence completes, nothing happens.
     public func on(_ event: Event<E>) {
         switch event {
-        case .error(let error):
+        case let .error(error):
             bindingErrorToInterface(error)
         case .next:
             _valueSink.on(event)
@@ -114,7 +112,7 @@ public struct ControlProperty<PropertyType> : ControlPropertyType {
 extension ControlPropertyType where E == String? {
     /// Transforms control property of type `String?` into control property of type `String`.
     public var orEmpty: ControlProperty<String> {
-        let original: ControlProperty<String?> = self.asControlProperty()
+        let original: ControlProperty<String?> = asControlProperty()
 
         let values: Observable<String> = original._values.map { $0 ?? "" }
         let valueSink: AnyObserver<String> = original._valueSink.mapObserver { $0 }

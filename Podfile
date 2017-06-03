@@ -1,16 +1,30 @@
 platform :ios, '10.0'
 use_frameworks!
 
-target ‘RXWeather’ do
+def core_pods
     pod 'RxSwift', '~> 3.0'
     pod 'RxCocoa', '~> 3.0'
+    pod 'SwiftLint'
+    pod 'SwiftFormat/CLI'
+    pod 'Alamofire', '~> 4.0'
+    pod 'RxAlamofire'
+    pod "RxCoreData", '~> 0.3.1'
+    pod 'Reusable'
 end
 
-target 'RXWeatherTests’ do
+def test_pods
     pod 'Quick'
     pod 'Nimble'
     pod 'RxBlocking', '~> 3.0'
     pod 'RxTest',     '~> 3.0'
+end
+
+target ‘RXWeather’ do
+    core_pods
+end
+
+target 'RXWeatherTests’ do
+    test_pods
 end
 
 post_install do |installer|

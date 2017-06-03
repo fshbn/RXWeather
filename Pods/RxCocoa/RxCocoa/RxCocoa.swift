@@ -9,7 +9,7 @@
 import class Foundation.NSNull
 
 #if !RX_NO_MODULE
-import RxSwift
+    import RxSwift
 #endif
 #if os(iOS)
     import UIKit
@@ -35,7 +35,6 @@ public enum RxCocoaError
     case castingError(object: Any, targetType: Any.Type)
 }
 
-
 // MARK: Debug descriptions
 
 extension RxCocoaError {
@@ -54,23 +53,21 @@ extension RxCocoaError {
             return "Unobservable object `\(object)` was observed as `\(propertyName)` of `\(sourceObject)`."
         case .errorDuringSwizzling:
             return "Error during swizzling."
-        case .castingError(let object, let targetType):
+        case let .castingError(object, targetType):
             return "Error casting `\(object)` to `\(targetType)`"
         }
     }
 }
 
-
-
 // MARK: Error binding policies
 
 func bindingErrorToInterface(_ error: Swift.Error) {
     let error = "Binding error to UI: \(error)"
-#if DEBUG
-    rxFatalError(error)
-#else
-    print(error)
-#endif
+    #if DEBUG
+        rxFatalError(error)
+    #else
+        print(error)
+    #endif
 }
 
 /// Swift does not implement abstract methods. This method is used as a runtime check to ensure that methods which intended to be abstract (i.e., they should be implemented in subclasses) are not called directly on the superclass.
@@ -78,7 +75,7 @@ func rxAbstractMethod(message: String = "Abstract method", file: StaticString = 
     rxFatalError(message, file: file, line: line)
 }
 
-func rxFatalError(_ lastMessage: @autoclosure () -> String, file: StaticString = #file, line: UInt = #line) -> Swift.Never  {
+func rxFatalError(_ lastMessage: @autoclosure () -> String, file: StaticString = #file, line: UInt = #line) -> Swift.Never {
     // The temptation to comment this line is great, but please don't, it's for your own good. The choice is yours.
     fatalError(lastMessage(), file: file, line: line)
 }
@@ -127,7 +124,7 @@ func castOrFatalError<T>(_ value: AnyObject!, message: String) -> T {
     guard let result = maybeResult else {
         rxFatalError(message)
     }
-    
+
     return result
 }
 
@@ -136,7 +133,7 @@ func castOrFatalError<T>(_ value: Any!) -> T {
     guard let result = maybeResult else {
         rxFatalError("Failure converting from \(value) to \(T.self)")
     }
-    
+
     return result
 }
 
@@ -149,9 +146,9 @@ let delegateNotSet = "Delegate not set"
 
 #if !RX_NO_MODULE
 
-func rxFatalError(_ lastMessage: String) -> Never  {
-    // The temptation to comment this line is great, but please don't, it's for your own good. The choice is yours.
-    fatalError(lastMessage)
-}
+    func rxFatalError(_ lastMessage: String) -> Never {
+        // The temptation to comment this line is great, but please don't, it's for your own good. The choice is yours.
+        fatalError(lastMessage)
+    }
 
 #endif

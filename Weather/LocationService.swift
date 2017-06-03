@@ -14,17 +14,18 @@ protocol LocationServiceDelegate {
 }
 
 class LocationService: NSObject {
+
     var delegate: LocationServiceDelegate?
-    
+
     fileprivate let locationManager = CLLocationManager()
-    
+
     override init() {
         super.init()
-        
+
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
     }
-    
+
     func requestLocation() {
         locationManager.requestWhenInUseAuthorization()
         locationManager.requestLocation()
@@ -32,14 +33,16 @@ class LocationService: NSObject {
 }
 
 // MARK: - CLLocationManagerDelegate
-extension LocationService : CLLocationManagerDelegate {
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+
+extension LocationService: CLLocationManagerDelegate {
+
+    func locationManager(_: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.last {
             delegate?.locationDidUpdate(self, location: location)
         }
     }
-    
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+
+    func locationManager(_: CLLocationManager, didFailWithError error: Error) {
         print("Error finding location: \(error.localizedDescription)")
     }
 }

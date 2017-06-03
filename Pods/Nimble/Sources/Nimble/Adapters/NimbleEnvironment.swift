@@ -11,7 +11,7 @@ internal class NimbleEnvironment {
                 return env
             } else {
                 let newEnv = NimbleEnvironment()
-                self.activeInstance = newEnv
+                activeInstance = newEnv
                 return newEnv
             }
         }

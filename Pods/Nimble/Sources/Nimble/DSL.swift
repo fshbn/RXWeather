@@ -36,29 +36,29 @@ public func fail(_ file: FileString = #file, line: UInt = #line) {
 
 /// Like Swift's precondition(), but raises NSExceptions instead of sigaborts
 internal func nimblePrecondition(
-    _ expr: @autoclosure() -> Bool,
-    _ name: @autoclosure() -> String,
-    _ message: @autoclosure() -> String,
+    _ expr: @autoclosure () -> Bool,
+    _ name: @autoclosure () -> String,
+    _ message: @autoclosure () -> String,
     file: StaticString = #file,
     line: UInt = #line) {
-        let result = expr()
-        if !result {
-#if _runtime(_ObjC)
+    let result = expr()
+    if !result {
+        #if _runtime(_ObjC)
             let e = NSException(
                 name: NSExceptionName(name()),
                 reason: message(),
                 userInfo: nil)
             e.raise()
-#else
+        #else
             preconditionFailure("\(name()) - \(message())", file: file, line: line)
-#endif
-        }
+        #endif
+    }
 }
 
 internal func internalError(_ msg: String, file: FileString = #file, line: UInt = #line) -> Never {
     fatalError(
         "Nimble Bug Found: \(msg) at \(file):\(line).\n" +
-        "Please file a bug to Nimble: https://github.com/Quick/Nimble/issues with the " +
-        "code snippet that caused this error."
+            "Please file a bug to Nimble: https://github.com/Quick/Nimble/issues with the " +
+            "code snippet that caused this error."
     )
 }

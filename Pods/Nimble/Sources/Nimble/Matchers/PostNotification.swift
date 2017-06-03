@@ -4,18 +4,18 @@ internal class NotificationCollector {
     private(set) var observedNotifications: [Notification]
     private let notificationCenter: NotificationCenter
     #if _runtime(_ObjC)
-    private var token: AnyObject?
+        private var token: AnyObject?
     #else
-    private var token: NSObjectProtocol?
+        private var token: NSObjectProtocol?
     #endif
 
     required init(notificationCenter: NotificationCenter) {
         self.notificationCenter = notificationCenter
-        self.observedNotifications = []
+        observedNotifications = []
     }
 
     func startObserving() {
-        self.token = self.notificationCenter.addObserver(forName: nil, object: nil, queue: nil) { [weak self] n in
+        token = notificationCenter.addObserver(forName: nil, object: nil, queue: nil) { [weak self] n in
             // linux-swift gets confused by .append(n)
             self?.observedNotifications.append(n)
         }
@@ -42,16 +42,15 @@ public func postNotifications<T>(
     _ notificationsMatcher: T,
     fromNotificationCenter center: NotificationCenter = notificationCenterDefault)
     -> MatcherFunc<Any>
-    where T: Matcher, T.ValueType == [Notification]
-{
-    let _ = mainThread // Force lazy-loading of this value
+    where T: Matcher, T.ValueType == [Notification] {
+    _ = mainThread // Force lazy-loading of this value
     let collector = NotificationCollector(notificationCenter: center)
     collector.startObserving()
     var once: Bool = false
     return MatcherFunc { actualExpression, failureMessage in
         let collectorNotificationsExpression = Expression(memoizedExpression: { _ in
-            return collector.observedNotifications
-            }, location: actualExpression.location, withoutCaching: true)
+            collector.observedNotifications
+        }, location: actualExpression.location, withoutCaching: true)
 
         assert(pthread_equal(mainThread, pthread_self()) != 0, "Only expecting closure to be evaluated on main thread.")
         if !once {
