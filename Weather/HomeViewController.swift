@@ -7,11 +7,8 @@
 //
 
 import UIKit
-
-#if !RX_NO_MODULE
-    import RxSwift
-    import RxCocoa
-#endif
+import RxSwift
+import RxCocoa
 
 class HomeViewController: BaseViewController, UITableViewDelegate {
 
@@ -55,7 +52,7 @@ class HomeViewController: BaseViewController, UITableViewDelegate {
             .bind(to: temperatureLabel.rx.text))
         _ = compositeDisposable.insert(presenter.bookmarkedLocations
             .observeOn(MainScheduler.instance)
-            .bind(to: tableView.rx.items(cellIdentifier: BookmarkTableViewCell.identifier, cellType: BookmarkTableViewCell.self)) { (_, element: Weather, cell) in
+            .bind(to: tableView.rx.items(cellIdentifier: BookmarkTableViewCell.identifier, cellType: BookmarkTableViewCell.self)) { (_, element: WeatherModel, cell) in
                 cell.nameLabel.text = element.cityName
                 cell.temperatureLabel.text = String(format: "%.0f", element.temperature) + "°"
                 cell.iconLabel.text = element.icon

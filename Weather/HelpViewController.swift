@@ -7,11 +7,8 @@
 //
 
 import UIKit
-
-#if !RX_NO_MODULE
-    import RxSwift
-    import RxCocoa
-#endif
+import RxSwift
+import RxCocoa
 
 class HelpViewController: BaseViewController {
 
@@ -39,7 +36,6 @@ class HelpViewController: BaseViewController {
     // MARK: - Configure
 
     func configureWebView() {
-
         if let url = Bundle.main.url(forResource: "help", withExtension: "html") {
             webView.loadRequest(URLRequest(url: url))
         }

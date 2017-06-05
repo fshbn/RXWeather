@@ -8,11 +8,8 @@
 
 import Foundation
 import CoreLocation
-
-#if !RX_NO_MODULE
-    import RxSwift
-    import RxCocoa
-#endif
+import RxSwift
+import RxCocoa
 
 class CityPresenter: BasePresenter {
 
@@ -24,11 +21,11 @@ class CityPresenter: BasePresenter {
     let precipitationProbability = BehaviorSubject<String>.init(value: "")
     let humidity = BehaviorSubject<String>.init(value: "")
     let windSpeed = BehaviorSubject<String>.init(value: "")
-    let forecasts = BehaviorSubject<[Forecast]>.init(value: [])
+    let forecasts = BehaviorSubject<[ForecastModel]>.init(value: [])
 
     // MARK: - Properties
 
-    private var weather: Weather!
+    private var weatherModel: WeatherModel!
 
     // MARK: - Dependencies
 
@@ -42,8 +39,8 @@ class CityPresenter: BasePresenter {
         super.init()
     }
 
-    func setWeather(weather: Weather) {
-        self.weather = weather
+    func setWeatherModel(weatherModel: WeatherModel) {
+        self.weatherModel = weatherModel
 
         loadView()
         _ = compositeDisposable.insert(observe5DayForecast())
@@ -52,18 +49,18 @@ class CityPresenter: BasePresenter {
     // MARK: - Business
 
     fileprivate func loadView() {
-        cityName.onNext(weather.cityName)
-        icon.onNext(weather.icon)
-        temperature.onNext(String(format: "%.0f", weather.temperature) + "°")
-        precipitationProbability.onNext(String(format: "%.0f", weather.precipitationProbability))
-        humidity.onNext(String(format: "%.0f", weather.humidity))
-        windSpeed.onNext(String(format: "%.0f", weather.windSpeed))
+        cityName.onNext(weatherModel.cityName)
+        icon.onNext(weatherModel.icon)
+        temperature.onNext(String(format: "%.0f", weatherModel.temperature) + "°")
+        precipitationProbability.onNext(String(format: "%.0f", weatherModel.precipitationProbability))
+        humidity.onNext(String(format: "%.0f", weatherModel.humidity))
+        windSpeed.onNext(String(format: "%.0f", weatherModel.windSpeed))
     }
 
     // MARK: - Observables
 
     fileprivate func observe5DayForecast() -> Disposable {
-        let location = CLLocation(latitude: weather.lat, longitude: weather.lon)
+        let location = CLLocation(latitude: weatherModel.lat, longitude: weatherModel.lon)
 
         return interactor.get5DayWeatherForecast(location: location)
             .subscribe(onNext: { result in
