@@ -1,5 +1,5 @@
 //
-//  Forecast.swift
+//  Weather.swift
 //  Weather
 //
 //  Created by Boran ASLAN on 12/05/2017.
@@ -8,8 +8,9 @@
 
 import Foundation
 
-struct Forecast {
-    var date: Double = 0
+struct WeatherModel {
+    var cityId: Int16 = 0
+    var cityName: String = ""
     var temperature: Double = 0
     var weatherCondition: String = ""
     var humidity: Double = 0
@@ -17,16 +18,15 @@ struct Forecast {
     var windSpeed: Double = 0
     var windDeg: Double = 0
     var icon: String = ""
+    var lat: Double = 0
+    var lon: Double = 0
 }
 
-extension Forecast {
+extension WeatherModel {
 
     struct Key {
-        static let date = "dt"
-        // temp
-        static let tempKey = "temp"
-        static let temperatureday = "day"
-
+        static let cityId = "id"
+        static let cityName = "name"
         // main
         static let mainKey = "main"
         static let temperature = "temp"
@@ -48,12 +48,16 @@ extension Forecast {
     }
 
     init?(json: [String: Any]) {
-        if let dateValue = json[Key.date] as? Double {
-            date = dateValue
+        if let cityId = json["id"] as? Int16 {
+            self.cityId = cityId
         }
 
-        if let main = json[Key.tempKey] as? Dictionary<String, AnyObject> {
-            if let temperatureValue = main[Key.temperatureday] as? Double {
+        if let cityNameString = json[Key.cityName] as? String {
+            cityName = cityNameString
+        }
+
+        if let main = json[Key.mainKey] as? [String: AnyObject] {
+            if let temperatureValue = main[Key.temperature] as? Double {
                 temperature = temperatureValue
             }
 
@@ -62,29 +66,29 @@ extension Forecast {
             }
         }
 
-        if let weather = json[Key.weatherKey] as? [Dictionary<String, AnyObject>] {
-            if let weatherConditionValue = weather[0][Key.weatherCondition] as? String {
-                weatherCondition = weatherConditionValue
-            }
-
-            if let icon = weather[0]["icon"] as? String, let iconId = weather[0]["id"] as? Int {
-                self.icon = WeatherIcon(condition: iconId, iconString: icon).iconText
-            }
-        }
-
-        if let rain = json[Key.rainKey] as? Dictionary<String, AnyObject> {
+        if let rain = json[Key.rainKey] as? [String: AnyObject] {
             if let precipitationValue = rain[Key.precipitation] as? Double {
                 precipitationProbability = precipitationValue
             }
         }
 
-        if let wind = json[Key.windKey] as? Dictionary<String, AnyObject> {
+        if let wind = json[Key.windKey] as? [String: AnyObject] {
             if let windSpeedValue = wind[Key.windSpeed] as? Double {
                 windSpeed = windSpeedValue
             }
 
             if let windDegValue = wind[Key.windDeg] as? Double {
                 windDeg = windDegValue
+            }
+        }
+
+        if let weather = json[Key.weatherKey] as? [[String: AnyObject]] {
+            if let weatherConditionValue = weather[0][Key.weatherCondition] as? String {
+                weatherCondition = weatherConditionValue
+            }
+
+            if let icon = weather[0]["icon"] as? String, let iconId = weather[0]["id"] as? Int {
+                self.icon = WeatherIconModel(condition: iconId, iconString: icon).iconText
             }
         }
     }

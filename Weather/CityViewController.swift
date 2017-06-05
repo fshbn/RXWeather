@@ -7,17 +7,14 @@
 //
 
 import UIKit
-
-#if !RX_NO_MODULE
-    import RxSwift
-    import RxCocoa
-#endif
+import RxSwift
+import RxCocoa
 
 class CityViewController: BaseViewController {
 
     // MARK: - Intents
 
-    var weather: Weather!
+    var weatherModel: WeatherModel!
 
     // MARK: - Outlets
 
@@ -30,6 +27,8 @@ class CityViewController: BaseViewController {
     @IBOutlet weak var closeButton: UIButton!
     @IBOutlet weak var tableView: UITableView!
 
+    // MARK: - Initialization
+
     override func initDependencies() {
         super.initDependencies()
 
@@ -39,7 +38,7 @@ class CityViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        presenter.setWeather(weather: weather)
+        presenter.setWeatherModel(weatherModel: weatherModel)
     }
 
     // MARK: - Observe
@@ -67,7 +66,7 @@ class CityViewController: BaseViewController {
                 .bind(to: humidityLabel.rx.text))
         _ = compositeDisposable.insert(presenter.forecasts
             .observeOn(MainScheduler.instance)
-            .bind(to: tableView.rx.items(cellIdentifier: CityTableViewCell.identifier, cellType: CityTableViewCell.self)) { (row, element: Forecast, cell) in
+            .bind(to: tableView.rx.items(cellIdentifier: CityTableViewCell.identifier, cellType: CityTableViewCell.self)) { (row, element: WeatherModel, cell) in
                 print(row)
                 cell.nameLabel.text = element.weatherCondition
                 cell.temperatureLabel.text = element.icon
@@ -83,7 +82,7 @@ class CityViewController: BaseViewController {
 
     // MARK: - Actions
 
-    func observeCloseButtonTap() -> Disposable {
+    fileprivate func observeCloseButtonTap() -> Disposable {
         return closeButton.rx.tap
             .asDriver()
             .drive(onNext: { _ in
@@ -96,7 +95,7 @@ class CityViewController: BaseViewController {
 
 extension CityViewController {
 
-    var presenter: CityPresenter {
+    fileprivate var presenter: CityPresenter {
         set {
             basePresenter = newValue
         }
@@ -113,16 +112,3 @@ extension CityViewController {
         return CityPresenter(interactor: interactor)
     }
 }
-
-// extension CityViewController {
-//
-//    var presenter: CityPresenter {
-//        set {
-//            basePresenter = newValue
-//        }
-//        get {
-//            return basePresenter as! CityPresenter
-//        }
-//    }
-//
-// }

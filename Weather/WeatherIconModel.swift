@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct WeatherIcon {
+struct WeatherIconModel {
     let iconText: String
 
     enum IconType: String, CustomStringConvertible {

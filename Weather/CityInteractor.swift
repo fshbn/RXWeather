@@ -8,14 +8,11 @@
 
 import Foundation
 import CoreLocation
-
-#if !RX_NO_MODULE
-    import RxSwift
-    import RxCocoa
-#endif
+import RxSwift
+import RxCocoa
 
 protocol CityInteractorProtocol {
-    func get5DayWeatherForecast(location: CLLocation) -> Observable<ServiceResult<[Forecast]>>
+    func get5DayWeatherForecast(location: CLLocation) -> Observable<ServiceResult<[ForecastModel]>>
 }
 
 class CityInteractor: BaseInteractor, CityInteractorProtocol {
@@ -26,7 +23,7 @@ class CityInteractor: BaseInteractor, CityInteractorProtocol {
         self.networkService = networkService
     }
 
-    func get5DayWeatherForecast(location: CLLocation) -> Observable<ServiceResult<[Forecast]>> {
+    func get5DayWeatherForecast(location: CLLocation) -> Observable<ServiceResult<[ForecastModel]>> {
         return Observable.create({ (observer) -> Disposable in
             self.networkService!.get5DayWeatherForecast(location)
                 .subscribe(onNext: { data in
