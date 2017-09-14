@@ -350,8 +350,8 @@
 		54C3A0051EC62C480060EEA1 /* Home */ = {
 			isa = PBXGroup;
 			children = (
-				54BB66691EC718D8001CD99B /* BookmarkTableViewCell.swift */,
 				F0720E321EE2252B0016D1A7 /* Home.storyboard */,
+				54BB66691EC718D8001CD99B /* BookmarkTableViewCell.swift */,
 				F0C58E991EDC1F61001AA0B4 /* HomeInteractor.swift */,
 				F0C58E971EDC1F56001AA0B4 /* HomePresenter.swift */,
 				54C3A0271EC643450060EEA1 /* HomeViewController.swift */,

@@ -52,7 +52,7 @@ extension Forecast {
             date = dateValue
         }
 
-        if let main = json[Key.tempKey] as? Dictionary<String, AnyObject> {
+        if let main = json[Key.tempKey] as? [String: AnyObject] {
             if let temperatureValue = main[Key.temperatureday] as? Double {
                 temperature = temperatureValue
             }
@@ -62,7 +62,7 @@ extension Forecast {
             }
         }
 
-        if let weather = json[Key.weatherKey] as? [Dictionary<String, AnyObject>] {
+        if let weather = json[Key.weatherKey] as? [[String: AnyObject]] {
             if let weatherConditionValue = weather[0][Key.weatherCondition] as? String {
                 weatherCondition = weatherConditionValue
             }
@@ -72,13 +72,13 @@ extension Forecast {
             }
         }
 
-        if let rain = json[Key.rainKey] as? Dictionary<String, AnyObject> {
+        if let rain = json[Key.rainKey] as? [String: AnyObject] {
             if let precipitationValue = rain[Key.precipitation] as? Double {
                 precipitationProbability = precipitationValue
             }
         }
 
-        if let wind = json[Key.windKey] as? Dictionary<String, AnyObject> {
+        if let wind = json[Key.windKey] as? [String: AnyObject] {
             if let windSpeedValue = wind[Key.windSpeed] as? Double {
                 windSpeed = windSpeedValue
             }
