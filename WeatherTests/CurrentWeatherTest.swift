@@ -8,11 +8,11 @@
 
 import XCTest
 import CoreLocation
-@testable import Weather
+@testable import RXWeather
 
 class CurrentWeatherTest: XCTestCase {
     
-    let weatherService: ServiceProtocol = OpenWeatherMapService()
+    let weatherService: OpenWeatherMapService = OpenWeatherMapService()
     
     override func setUp() {
         super.setUp()
