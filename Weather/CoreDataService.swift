@@ -11,10 +11,8 @@ import CoreData
 import UIKit
 import CoreLocation
 import RxCoreData
-#if !RX_NO_MODULE
-    import RxSwift
-    import RxCocoa
-#endif
+import RxSwift
+import RxCocoa
 
 class CoreDataService: CoreDataServiceProtocol {
 

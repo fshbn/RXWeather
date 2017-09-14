@@ -8,10 +8,8 @@
 
 import Foundation
 import CoreData
-#if !RX_NO_MODULE
-    import RxSwift
-    import RxCocoa
-#endif
+import RxSwift
+import RxCocoa
 
 extension NSManagedObjectContext {
 

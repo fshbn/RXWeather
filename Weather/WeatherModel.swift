@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct Weather {
+struct WeatherModel {
     var cityId: Int16 = 0
     var cityName: String = ""
     var temperature: Double = 0
@@ -22,7 +22,7 @@ struct Weather {
     var lon: Double = 0
 }
 
-extension Weather {
+extension WeatherModel {
 
     struct Key {
         static let cityId = "id"
@@ -88,7 +88,7 @@ extension Weather {
             }
 
             if let icon = weather[0]["icon"] as? String, let iconId = weather[0]["id"] as? Int {
-                self.icon = WeatherIcon(condition: iconId, iconString: icon).iconText
+                self.icon = WeatherIconModel(condition: iconId, iconString: icon).iconText
             }
         }
     }

@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct Forecast {
+struct ForecastModel {
     var date: Double = 0
     var temperature: Double = 0
     var weatherCondition: String = ""
@@ -19,7 +19,7 @@ struct Forecast {
     var icon: String = ""
 }
 
-extension Forecast {
+extension ForecastModel {
 
     struct Key {
         static let date = "dt"
@@ -68,7 +68,7 @@ extension Forecast {
             }
 
             if let icon = weather[0]["icon"] as? String, let iconId = weather[0]["id"] as? Int {
-                self.icon = WeatherIcon(condition: iconId, iconString: icon).iconText
+                self.icon = WeatherIconModel(condition: iconId, iconString: icon).iconText
             }
         }
 

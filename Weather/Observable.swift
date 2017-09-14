@@ -9,6 +9,7 @@
 import Foundation
 
 class BrnObservable<T> {
+    
     typealias Observer = (T) -> Void
     var observer: Observer?
 

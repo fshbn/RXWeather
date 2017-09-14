@@ -8,10 +8,8 @@
 
 import Foundation
 import CoreLocation
-#if !RX_NO_MODULE
-    import RxSwift
-    import RxCocoa
-#endif
+import RxSwift
+import RxCocoa
 
 class HomePresenter: BasePresenter {
 
@@ -20,12 +18,12 @@ class HomePresenter: BasePresenter {
     let cityName = BehaviorSubject<String>.init(value: "")
     let icon = BehaviorSubject<String>.init(value: "")
     let temperature = BehaviorSubject<String>.init(value: "")
-    let bookmarkedLocations = BehaviorSubject<[Weather]>.init(value: [Weather]())
+    let bookmarkedLocations = BehaviorSubject<[WeatherModel]>.init(value: [WeatherModel]())
 
     // MARK: - Properties
 
     fileprivate var userLastLocation = CLLocation(latitude: 0, longitude: 0)
-    fileprivate var bookmarks = [Weather]()
+    fileprivate var bookmarks = [WeatherModel]()
 
     // MARK: - Dependencies
 
@@ -48,9 +46,9 @@ class HomePresenter: BasePresenter {
         locationService.requestLocation()
     }
 
-    func deleteBookmark(weather: Weather) {
-        interactor.deleteBookmark(weather: weather)
-        bookmarks = bookmarks.filter { $0.cityId != weather.cityId }
+    func deleteBookmark(weatherModel: WeatherModel) {
+        interactor.deleteBookmark(weatherModel: weatherModel)
+        bookmarks = bookmarks.filter { $0.cityId != weatherModel.cityId }
 
         bookmarkedLocations.onNext(bookmarks)
     }
@@ -67,8 +65,9 @@ class HomePresenter: BasePresenter {
         return interactor.getBookmarks(predicate: nil)
             .subscribe(onNext: { result in
                 switch result {
-                case let .success(weatherList):
-                    self.bookmarkedLocations.onNext(weatherList)
+                case let .success(weatherModelList):
+                    self.bookmarkedLocations.onNext(weatherModelList)
+                    print("")
                 case let .failure(error):
                     self.bookmarkedLocations.onNext([])
                 }
@@ -77,8 +76,8 @@ class HomePresenter: BasePresenter {
 
     // MARK: - Business
 
-    fileprivate func updateWeather(_ weather: Weather?) {
-        guard let weather = weather else {
+    fileprivate func updateWeather(_ weatherModel: WeatherModel?) {
+        guard let weather = weatherModel else {
             cityName.onNext("")
             icon.onNext("")
             temperature.onNext(String(format: "%.0f", "") + "°")
